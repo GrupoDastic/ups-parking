@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "ups-parking",
+    "displayName": "UPS Parking",
     "slug": "ups-parking",
     "version": "1.0.0",
     "orientation": "portrait",
