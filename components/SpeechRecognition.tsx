@@ -1,37 +1,36 @@
-import {Button, StyleSheet, Text, View} from "react-native";
+import {StyleSheet} from "react-native";
 import {useVoiceRecognition} from "@/hooks/useSpeechRecognition";
 import {ExpoSpeechRecognitionModule} from "expo-speech-recognition";
+import {ThemedText} from "@/components/ThemedText";
+import {ThemedView} from "@/components/ThemedView";
+import {ThemedButton} from "@/components/ThemedButton";
 
-export default function AboutScreen() {
+export default function SpeechRecognition() {
     const {recognizing, transcript, handleStart} = useVoiceRecognition();
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Reconocimiento de Voz</Text>
+        <ThemedView style={styles.container}>
+            <ThemedText style={styles.text}>Reconocimiento de Voz</ThemedText>
             {!recognizing ? (
-                <Button title="Start" onPress={handleStart} />
+                <ThemedButton title="Start" onPress={handleStart}/>
             ) : (
-                <Button
+                <ThemedButton
                     title="Stop"
                     onPress={() => ExpoSpeechRecognitionModule.stop()}
                 />
             )}
-            <Text style={styles.text}>{transcript}</Text>
-        </View>
+            <ThemedText style={styles.text}>{transcript}</ThemedText>
+        </ThemedView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
     },
     text: {
-        fontSize: 20,
         textAlign: 'center',
         margin: 10,
-        color: '#333333',
     }
 });
 

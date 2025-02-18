@@ -1,15 +1,18 @@
-import {Text, View, StyleSheet} from "react-native";
-import {Link} from "expo-router";
+import {SafeAreaView, StyleSheet} from "react-native";
+import ParkingMap from "@/components/ParkingMap";
+import {ThemedView} from "@/components/ThemedView";
+import SpeechRecognition from "@/components/SpeechRecognition";
+import {ThemedText} from "@/components/ThemedText";
 
 const IndexScreen = () => {
 
-
-
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Edit app/index.tsx to edit this screen.</Text>
-            <Link href="/about" style={styles.button}>Go to About</Link>
-        </View>
+        <SafeAreaView style={{flex: 1}}>
+            <ThemedView style={styles.container}>
+                <ParkingMap />
+                <SpeechRecognition/>
+            </ThemedView>
+        </SafeAreaView>
     );
 }
 
@@ -18,20 +21,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
     },
-    text: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-        color: '#333333',
-    },
-    button: {
-        marginTop: 20,
-        padding: 10,
-        backgroundColor: '#007AFF',
-        borderRadius: 5,
-    }
 });
 
 export default IndexScreen;

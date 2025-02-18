@@ -14,7 +14,7 @@ export function ThemedButton({
                                  ...rest
                              }: ThemedButtonProps) {
     const color = useThemeColor({light: lightColor, dark: darkColor}, 'button');
-    
+
     return (
         <Button
             color={color}
