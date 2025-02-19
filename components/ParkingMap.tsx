@@ -51,14 +51,16 @@ const ParkingMap = () => {
 
     return (
         <ThemedView style={styles.container}>
-r            <TouchableOpacity
+            <ThemedText type={"defaultSemiBold"}
+                        style={styles.text__title}>Zona {zones[currentZoneIndex].id}</ThemedText>
+            <TouchableOpacity
                 onPress={handlePress}
             >
                 <Image
                     source={zones[currentZoneIndex].image}
                     style={styles.image}
                 />
-                <ThemedText type={"defaultSemiBold"} style={styles.text}>Cambiar Zona</ThemedText>
+                <ThemedText type="subtitle" style={styles.text}>Cambiar Zona</ThemedText>
             </TouchableOpacity>
         </ThemedView>
     );
@@ -69,13 +71,20 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    text: {
+    text__title: {
+        fontSize: 20,
         textAlign: 'center',
-        margin: 10,
+        margin: 30,
+        marginBottom: 30,
+    },
+    text: {
+        marginTop: 20,
+        marginBottom: 20,
+        textAlign: 'center',
     },
     image: {
-        width: 300,
-        height: 300
+        width: 345,
+        height: 380
     },
     button: {
         marginTop: 20,

@@ -2,15 +2,22 @@ import {SafeAreaView, StyleSheet} from "react-native";
 import ParkingMap from "@/components/ParkingMap";
 import {ThemedView} from "@/components/ThemedView";
 import SpeechRecognition from "@/components/SpeechRecognition";
-import {ThemedText} from "@/components/ThemedText";
+import Header from "@/components/Header";
 
 const IndexScreen = () => {
 
     return (
         <SafeAreaView style={{flex: 1}}>
             <ThemedView style={styles.container}>
-                <ParkingMap />
-                <SpeechRecognition/>
+                <ThemedView>
+                    <Header/>
+                </ThemedView>
+                <ThemedView>
+                    <ParkingMap/>
+                </ThemedView>
+                <ThemedView>
+                    <SpeechRecognition/>
+                </ThemedView>
             </ThemedView>
         </SafeAreaView>
     );
