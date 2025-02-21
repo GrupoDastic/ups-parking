@@ -5,8 +5,9 @@ import zone3Coords from '@/constants/image_coordinates_zone_3';
 import zone4Coords from '@/constants/image_coordinates_zone_4';
 import {useState} from "react";
 import {Image} from "expo-image";
-import {ScrollView, StyleSheet, TouchableOpacity} from "react-native";
+import {ScrollView, StyleSheet, TouchableOpacity, View} from "react-native";
 import {ThemedText} from "@/components/ThemedText";
+import {GLView} from "expo-gl";
 
 const zone1 = require('@/assets/images/map/zone1.jpg');
 const zone2 = require('@/assets/images/map/zone2.jpg');
@@ -56,10 +57,23 @@ const ParkingMap = () => {
             <TouchableOpacity
                 onPress={handlePress}
             >
-                <Image
-                    source={zones[currentZoneIndex].image}
-                    style={styles.image}
-                />
+                <View style={styles.image__zone}>
+                    <Image
+                        source={zones[currentZoneIndex].image}
+                        style={styles.image}
+                    />
+                    {
+                        zones[currentZoneIndex].coords.map((spot) => (
+                            <View key={spot.id_parqueadero}
+                                  style={{
+                                      ...styles.spot,
+                                      top: spot.y,
+                                      left: spot.x
+                                  }}
+                            />
+                        ))
+                    }
+                </View>
                 <ThemedText type="subtitle" style={styles.text}>Cambiar Zona</ThemedText>
             </TouchableOpacity>
         </ThemedView>
@@ -84,14 +98,26 @@ const styles = StyleSheet.create({
     },
     image: {
         width: 345,
-        height: 380
+        height: 380,
+    },
+    image__zone: {
+        position: 'relative',
+        width: 345,
+        height: 380,
     },
     button: {
         marginTop: 20,
         padding: 10,
         backgroundColor: '#007AFF',
         borderRadius: 5,
-    }
+    },
+    spot: {
+        position: 'absolute',
+        width: 5, // Tamaño del spot
+        height: 5,
+        backgroundColor: 'green', // Color del spot
+        borderRadius: 10, // Hacerlo circular
+    },
 });
 
 export default ParkingMap;

@@ -15,8 +15,7 @@ export const useVoiceRecognition = () => {
     }, []);
 
     useSpeechRecognitionEvent("start", () => {
-            console.log("Reconocimiento iniciado");
-            setRecognizing(true)
+            setRecognizing(true);
         }
     );
     useSpeechRecognitionEvent("end", () => setRecognizing(false));
@@ -25,7 +24,6 @@ export const useVoiceRecognition = () => {
 
     const handleStart = async () => {
         try {
-            console.log("Intentando iniciar reconocimiento...");
             ExpoSpeechRecognitionModule.start({
                 lang: "es-ES",
                 requiresOnDeviceRecognition: false,
@@ -36,5 +34,5 @@ export const useVoiceRecognition = () => {
         }
     };
 
-    return {recognizing, transcript, handleStart};
+    return {recognizing, transcript, setTranscript, handleStart};
 }

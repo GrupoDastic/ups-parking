@@ -5,3 +5,9 @@ export type Zone = {
 }
 
 export type Zones = Zone[];
+
+export type Parking = {
+    id_zona: number;
+    id_parqueadero: number;
+    estado: number;
+}
