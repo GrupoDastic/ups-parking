@@ -1,13 +1,25 @@
-export type Zone = {
-    id_parqueadero: string,
-    x: number,
-    y: number
-}
+import {z} from 'zod';
 
+const ZoneSchema = z.object({
+    id_parqueadero: z.string(),
+    x: z.number(),
+    y: z.number()
+});
+
+export type Zone = z.infer<typeof ZoneSchema>;
 export type Zones = Zone[];
 
-export type Parking = {
-    id_zona: number;
-    id_parqueadero: number;
-    estado: number;
-}
+const ParkingSchema = z.object({
+    id_zona: z.number(),
+    id_parqueadero: z.number(),
+    numero: z.number(),
+    estado: z.number()
+});
+
+export type Parking = z.infer<typeof ParkingSchema>;
+
+export const DataResponseSchema = z.object({
+    text: z.string(),
+    data: z.array(ParkingSchema)
+});
+

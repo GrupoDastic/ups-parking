@@ -1,13 +1,17 @@
-import axios from "axios";
+import axios, {isAxiosError} from "axios";
+import {DataResponseSchema} from "@/types";
 
-
+const API_URL = String(process.env.EXPO_PUBLIC_API_URL);
 export const getParkingAvailable = async (text: string) => {
-    const API_URL = String(process.env.EXPO_PUBLIC_API_URL);
     try {
         const {data} = await axios.get(`${API_URL}/parkings/request?text=${text}`);
-        console.log(data);
-        return data;
+        const response = DataResponseSchema.safeParse(data);
+        if (response.success) {
+            return response.data;
+        }
     } catch (error) {
-        console.error(error);
+        if (isAxiosError(error) && error.response) {
+            throw new Error(error.response?.data.error)
+        }
     }
 }
