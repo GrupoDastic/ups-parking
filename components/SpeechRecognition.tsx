@@ -23,9 +23,16 @@ export default function SpeechRecognition() {
         }
 
         getParkingAvailable(encodeURIComponent(transcript)).then((response) => {
-            Speech.speak(response.text, {
-                language: 'es-ES'
-            });
+            if (response === null || response === undefined) {
+                Speech.speak("No se encontraron resultados", {
+                    language: "es-ES",
+                });
+            } else {
+                Speech.speak(response.text, {
+                    language: 'es-ES'
+                });
+
+            }
         });
 
         setTranscript("");
@@ -34,7 +41,6 @@ export default function SpeechRecognition() {
 
     return (
         <ThemedView style={styles.container}>
-
             {
                 !recognizing ? (
                     <ThemedPressable
@@ -47,6 +53,7 @@ export default function SpeechRecognition() {
                     </ThemedPressable>
                 ) : (
                     <ThemedPressable
+                        style={styles.button}
                         onPress={() => ExpoSpeechRecognitionModule.stop()}
                     >
                         <ThemedText type="defaultSemiBold" style={styles.text}>
@@ -71,8 +78,7 @@ const styles = StyleSheet.create({
             'center',
         marginTop:
             20
-    }
-    ,
+    },
     text: {
         textAlign: 'center',
         margin: 10,
