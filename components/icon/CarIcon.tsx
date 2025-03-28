@@ -11,6 +11,7 @@ interface CarIconProps extends SvgProps {
 }
 
 const CarIcon = ({x, y, rotate, width = 80, height = 50, ...props}: CarIconProps) => {
+
     const fillColor = useThemeColor({}, 'text.primary');
 
     return (

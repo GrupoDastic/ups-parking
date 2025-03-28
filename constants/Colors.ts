@@ -4,7 +4,7 @@ export const Colors = {
         onPrimary: "#FFFFFF",
         primaryContainer: "#D6E3FF",
         onPrimaryContainer: "#001B3E",
-        secondary: "#F9BD00",
+        secondary: "#f5cc4a", //#F9BD00
         onSecondary: "#FFFFFF",
         secondaryContainer: "#FFDF9B",
         onSecondaryContainer: "#251A00",
@@ -52,7 +52,7 @@ export const Colors = {
         onPrimary: "#002F64",
         primaryContainer: "#00458D",
         onPrimaryContainer: "#D6E3FF",
-        secondary: "#F9BD00",
+        secondary: "#f5cc4a",
         onSecondary: "#3F2E00",
         secondaryContainer: "#5B4300",
         onSecondaryContainer: "#FFD79B",
@@ -77,7 +77,7 @@ export const Colors = {
         inverseSurface: "#E3E2E6",
         inverseOnSurface: "#2F3033",
         inversePrimary: "#2A5EA7",
-        line: "#FFE208",
+        line: "#ffffff",
         elevation: {
             level0: "transparent",
             level1: "#212429",

@@ -7,10 +7,10 @@ interface ErrorPageProps {
     onRetry?: () => void;
 }
 
-const ErrorPage: React.FC<ErrorPageProps> = ({
+const ErrorPage = ({
                                                  message = "¡Ups! Algo salió mal.",
                                                  onRetry
-                                             }) => {
+                                             } : ErrorPageProps) => {
     return (
         <View className="flex-1 justify-center items-center bg-background p-6">
             <ThemedText type="h1" className="text-error mb-2">

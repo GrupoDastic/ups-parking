@@ -1,14 +1,14 @@
-import React, {Dispatch, SetStateAction} from "react";
+import React from "react";
 import {View} from "react-native";
-import Area from "@/components/zone/1/Area";
+import AreaBlockB from "@/components/zone/1/AreaBlockB";
 import {useQuery} from "@tanstack/react-query";
 import {getAvailableParkingSpaces} from "@/services/parkingService";
-import ThemedText from "./shared/ThemedText";
 import {ParkingsSpaces} from "@/types";
 import Spinner from "./ui/spinner/Spinner";
+import ErrorPage from "@/components/ErrorPage";
 
 interface ParkingLotProps {
-    id: string;
+    id: string | string[];
     strips: string;
 }
 
@@ -18,7 +18,13 @@ const ParkingLot = ({id, strips}: ParkingLotProps) => {
         queryKey: ['parkingSpaces', id, strips],
         queryFn: () => {
             return getAvailableParkingSpaces(id, strips);
-        }
+        },
+        retry: true,
+        retryDelay: 5000,
+        refetchInterval: 5000,
+        refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
+        refetchIntervalInBackground: true,
     });
 
     if (parkingsSpaces.isLoading) {
@@ -26,14 +32,16 @@ const ParkingLot = ({id, strips}: ParkingLotProps) => {
     }
 
     if (parkingsSpaces.isError) {
-        return <ThemedText>Error...</ThemedText>;
+        return <ErrorPage onRetry={
+            () => parkingsSpaces.refetch()
+        }/>
     }
 
     const parkingSpacesData: ParkingsSpaces | undefined = parkingsSpaces.data;
 
     return (
         <View>
-            <Area
+            <AreaBlockB
                 id={id}
                 strips={strips}
                 parkingSpacesData={parkingSpacesData}/>

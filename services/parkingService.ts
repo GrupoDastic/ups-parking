@@ -30,10 +30,11 @@ export const getAvailableZones = async () => {
     }
 }
 
-export const getAvailableZonesStrips = async (zoneId : string) => {
+export const getAvailableZonesStrips = async (zoneId : string | string[]) => {
     try {
         const {data} = await axios.get(`${API_URL}/parkings/zones/${zoneId}/strips`);
         const response = StripsSchema.safeParse(data);
+        console.log(response);
         if (response.success) {
             return response.data;
         }
@@ -44,12 +45,11 @@ export const getAvailableZonesStrips = async (zoneId : string) => {
     }
 }
 
-export const getAvailableParkingSpaces = async (zoneId : string, stripId: string) => {
+export const getAvailableParkingSpaces = async (zoneId : string | string[], stripId: string) => {
     try {
         const {data} = await axios.get(`${API_URL}/parkings/zones/${zoneId}/strips/${stripId}/parking-spaces`);
         const response = ParkingsSpacesSchema.safeParse(data);
         if (response.success) {
-            console.log(response.data);
             return response.data;
         }
     } catch (error) {

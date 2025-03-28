@@ -1,6 +1,7 @@
 import * as React from "react"
 import Svg, {SvgProps, Path, G} from "react-native-svg"
 import {useThemeColor} from "@/hooks/useThemeColor";
+import {Colors} from "@/constants/Colors";
 
 interface DisabledIconProps extends SvgProps {
     x: number;
@@ -10,7 +11,7 @@ interface DisabledIconProps extends SvgProps {
 
 const DisabledIcon = ({x, y, rotate, ...props}: DisabledIconProps) => {
 
-    const fillColor = useThemeColor({}, 'text.primary');
+    const fillColor = Colors.light.primary;
 
     return (
         <Svg width="390" height="580" viewBox="0 0 390 580">

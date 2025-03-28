@@ -1,6 +1,7 @@
 import * as React from "react"
 import Svg, {SvgProps, G, Path, Defs, ClipPath} from "react-native-svg"
 import {useThemeColor} from "@/hooks/useThemeColor";
+import {Colors} from "@/constants/Colors";
 
 interface PregnantIconProps extends SvgProps {
     x: number;
@@ -9,7 +10,7 @@ interface PregnantIconProps extends SvgProps {
 }
 
 const PregnantIcon = ({x, y, rotate, ...props}: PregnantIconProps) => {
-    const fillColor = useThemeColor({}, 'text.primary');
+    const fillColor = Colors.light.primary;
     return (
         <Svg
             width="390" height="580" viewBox="0 0 390 580">

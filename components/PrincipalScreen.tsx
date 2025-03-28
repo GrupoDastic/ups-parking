@@ -23,8 +23,6 @@ const PrincipalScreen = () => {
 
     const backgroundColor = useThemeColor({}, 'background');
     const primary = useThemeColor({}, "primary");
-    const primaryContainer = useThemeColor({}, "primaryContainer");
-    const surfaceVariant = useThemeColor({}, "surfaceVariant");
     const primaryColor = Colors.light.primary;
     const secondaryColor = Colors.light.secondary;
 
@@ -111,14 +109,14 @@ const PrincipalScreen = () => {
 
                                     <View className="flex-row w-full justify-between mt-8 px-4 gap-x-2">
 
-                                        {zones?.zones.map(({zone_id, zone_name, available_spaces}) => (
+                                        {zones?.zones.map(({zone_id, zone_identifier, zone_name, available_spaces}) => (
                                             <TouchableOpacity
                                                 key={zone_id}
                                                 onPress={() => router.push(`/zones/${zone_id}`)}
                                                 disabled={available_spaces === "0"}
                                                 className={available_spaces === "0" ? "opacity-50" : ""}
                                             >
-                                                <ZoneCard zoneName={zone_name} availableSpaces={available_spaces}
+                                                <ZoneCard zoneIdentifier={zone_identifier} zoneName={zone_name} availableSpaces={available_spaces}
                                                 />
                                             </TouchableOpacity>
                                         ))}

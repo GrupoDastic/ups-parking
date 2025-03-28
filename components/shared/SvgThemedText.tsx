@@ -6,11 +6,12 @@ export interface SvgThemedTextProps extends TextProps {
     x: number;
     y: number;
     fontSize?: string;
+    fontWeight?: string;
     textAnchor?: "start" | "middle" | "end";
     rotate?: number;
 }
 
-const SvgThemedText = ({ children, x, y, fontSize, textAnchor, rotate = 0, ...rest }: SvgThemedTextProps) => {
+const SvgThemedText = ({ children, x, y, fontSize, textAnchor, rotate = 0, fontWeight,...rest }: SvgThemedTextProps) => {
     const textColor = useThemeColor({}, "text.primary");
 
     return (
@@ -20,6 +21,7 @@ const SvgThemedText = ({ children, x, y, fontSize, textAnchor, rotate = 0, ...re
                     x={x}
                     y={y}
                     fill={textColor}
+                    fontWeight={fontWeight}
                     fontSize={fontSize}
                     textAnchor={textAnchor}
                     {...rest}
