@@ -20,10 +20,10 @@ export const Colors = {
         onBackground: "#1A1B1E",
         surface: "#FDFBFF",
         onSurface: "#1A1B1E",
-        surfaceVariant: "#E0E2EC",
+        surfaceVariant: "#44474E", //#44474E
         onSurfaceVariant: "#44474E",
         outline: "#74777F",
-        outlineVariant: "#C4C6D0",
+        outlineVariant: "#e0e0e0",
         shadow: "#000000",
         scrim: "#000000",
         inverseSurface: "#2F3033",
@@ -68,7 +68,7 @@ export const Colors = {
         onBackground: "#E3E2E6",
         surface: "#1A1B1E",
         onSurface: "#E3E2E6",
-        surfaceVariant: "#44474E",
+        surfaceVariant: "#193a76", //#44474E
         onSurfaceVariant: "#C4C6D0",
         outline: "#8E9099",
         outlineVariant: "#44474E",

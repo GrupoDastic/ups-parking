@@ -8,16 +8,19 @@ export interface ThemedPressableProps extends TouchableOpacityProps {
     className?: string;
     icon?: keyof typeof Ionicons.glyphMap;
     size?: number;
+    isActive?: boolean;
 }
 
-const ThemedPressable = ({title, className, style, icon, size = 24, ...rest}: ThemedPressableProps) => {
+const
+    ThemedPressable = ({title, className, style, icon, size = 24, isActive = false, ...rest}: ThemedPressableProps) => {
     const secondaryColor = useThemeColor({}, 'secondary');
+    const surfaceVariant = useThemeColor({}, 'surfaceVariant');
 
     return (
         <TouchableOpacity
             activeOpacity={0.7} // 🔥 Ajusta la opacidad al presionar
             className={[
-                'bg-light-onPrimaryContainer',
+                isActive ? 'bg-light-surfaceVariant dark:bg-dark-surfaceVariant' : 'bg-light-onPrimaryContainer',
                 'p-2.5',
                 'rounded-lg',
                 'flex-row',
@@ -29,7 +32,9 @@ const ThemedPressable = ({title, className, style, icon, size = 24, ...rest}: Th
         >
             <View className='flex-row items-center justify-center space-x-2'>
                 {icon && <Ionicons name={icon} size={size} color={secondaryColor} className="mr-3"/>}
-                <ThemedText style={{color: secondaryColor}} type={'button'}>{title}</ThemedText>
+                <ThemedText style={{
+                    color: secondaryColor
+                }} type={'button'}>{title}</ThemedText>
             </View>
         </TouchableOpacity>
     );

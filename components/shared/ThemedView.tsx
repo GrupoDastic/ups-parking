@@ -6,13 +6,11 @@ import React from "react";
 interface ThemedViewProps extends ViewProps {
     flex?: boolean;
     className?: string;
-    safe?: boolean;
     blur?: boolean;  // Propiedad booleana para habilitar el difuminado
 }
 
-const ThemedView = ({className, safe = false, children, style, blur = false, flex, ...rest}: ThemedViewProps) => {
+const ThemedView = ({className, children, style, blur = false, flex, ...rest}: ThemedViewProps) => {
     const backgroundColor = useThemeColor({}, 'background');
-    const safeArea = useSafeAreaInsets();
 
     // Estilo para el difuminado
     const blurStyle = blur ? {
@@ -25,10 +23,6 @@ const ThemedView = ({className, safe = false, children, style, blur = false, fle
             style={[
                 {
                     flex: flex ? 1 : undefined,
-                    paddingTop: safe ? safeArea.top : 0,
-                    paddingBottom: safe ? safeArea.bottom : 0,
-                    paddingLeft: safe ? safeArea.left : 0,
-                    paddingRight: safe ? safeArea.right : 0,
                     ...blurStyle,  // Aplica el estilo con o sin difuminado
                 },
                 style,

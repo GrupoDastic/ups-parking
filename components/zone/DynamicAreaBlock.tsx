@@ -61,7 +61,8 @@ const DynamicAreaBlock = ({
                           }: DynamicAreaBlockProps) => {
     const backgroundColor = useThemeColor({}, "background");
 
-    // Limpieza del contenido SVG
+    const lineColor = useThemeColor({}, "line");
+
     let cleanedSvgContent = svgContent
         .replace(/\$\$/g, "")
         .replace(/<rect[^>]*fill="[^"]*"[^>]*\/>/gi, "")
@@ -69,7 +70,9 @@ const DynamicAreaBlock = ({
             /transform="matrix\((-?\d+\.?\d*) 0 0 (-?\d+\.?\d*) (\d+\.?\d*) (\d+\.?\d*)\)"/g,
             (_match, scaleX, scaleY, translateX, translateY) =>
                 `transform="translate(${translateX}, ${translateY}) scale(${scaleX}, ${scaleY})"`
-        );
+        )
+        .replace(/stroke="#FFE208"/gi, `stroke="${lineColor}"`);
+
 
     const svgXml = `
         <svg width="${width}" height="${height}" viewBox="${viewBox}" xmlns="http://www.w3.org/2000/svg">

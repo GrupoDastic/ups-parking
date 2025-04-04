@@ -109,12 +109,28 @@ const PrincipalScreen = () => {
 
                                     <View className="flex-row w-full justify-between mt-8 px-4 gap-x-2">
 
+                                        {/*
+                                        params: {
+                                                        id: zone_id,
+                                                        name: zone_name,
+                                                        identifier: zone_identifier,
+                                                    }
+                                        */}
+
                                         {zones?.zones.map(({zone_id, zone_identifier, zone_name, available_spaces}) => (
                                             <TouchableOpacity
                                                 key={zone_id}
-                                                onPress={() => router.push(`/zones/${zone_id}`)}
+                                                onPress={() => router.push({
+                                                    pathname: "/zones/[id]",
+                                                    params: {
+                                                        id: zone_id,
+                                                        name: zone_name,
+                                                        identifier: zone_identifier,
+                                                    }
+                                                })}
                                                 disabled={available_spaces === "0"}
                                                 className={available_spaces === "0" ? "opacity-50" : ""}
+
                                             >
                                                 <ZoneCard zoneIdentifier={zone_identifier} zoneName={zone_name} availableSpaces={available_spaces}/>
                                             </TouchableOpacity>
@@ -130,7 +146,7 @@ const PrincipalScreen = () => {
                         source={require('@/assets/images/main-car.png')}
                     />
 
-                    <View className="w-4/5 rounded-xl p-4 mb-2 mt-3 mx-4 shadow-lg items-center"
+                    <View className="w-4/5 rounded-xl p-4 mb-2 mx-4 shadow-lg items-center"
                           style={{backgroundColor}}
                     >
                         <ThemedText type="h2">UPS Parking</ThemedText>
@@ -158,10 +174,8 @@ const PrincipalScreen = () => {
 
 const styles = StyleSheet.create({
     carImage: {
-        width: 200,
+        width: 359,
         height: 330,
-        marginTop: 10,
-        marginBottom: 10,
         zIndex: 2,
     },
     logoImage: {

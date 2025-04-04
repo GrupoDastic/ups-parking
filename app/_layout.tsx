@@ -13,6 +13,8 @@ import SpeechRecognition from "@/components/SpeechRecognition";
 import {StatusBar} from "expo-status-bar";
 import {Navigator, Slot} from "expo-router";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {View} from "react-native";
+import {useSafeAreaInsets} from "react-native-safe-area-context";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -22,6 +24,8 @@ const RootLayout = () => {
 
     const backgroundColor = useThemeColor({}, 'background');
     const colorScheme = useColorScheme();
+
+    const safeAreaInsets = useSafeAreaInsets();
 
     const [loaded] = useFonts({
         'Poppins-Black': require('../assets/fonts/Poppins-Black.ttf'),
@@ -48,12 +52,18 @@ const RootLayout = () => {
         <QueryClientProvider client={queryClient}>
             <GestureHandlerRootView style={{flex: 1, backgroundColor}}>
                 <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                    <ThemedView safe>
+                    <View style={{
+                        flex: 1, backgroundColor,
+                        marginTop: safeAreaInsets.top,
+                        marginBottom: safeAreaInsets.bottom,
+                        marginLeft: safeAreaInsets.left,
+                        marginRight: safeAreaInsets.right,
+                    }}>
                         <StatusBar style={"auto"}/>
                         <Navigator>
                             <Slot/>
                         </Navigator>
-                    </ThemedView>
+                    </View>
                 </ThemeProvider>
             </GestureHandlerRootView>
         </QueryClientProvider>

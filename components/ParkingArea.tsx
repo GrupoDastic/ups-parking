@@ -1,7 +1,22 @@
 import React, {useState} from "react";
-import {ImageSourcePropType, Modal, ScrollView, View} from "react-native";
-import {Gesture, GestureDetector, GestureHandlerRootView, RefreshControl} from "react-native-gesture-handler";
-import Animated, {useAnimatedStyle, useSharedValue, withSpring} from "react-native-reanimated";
+import {
+    ImageSourcePropType,
+    Modal,
+    ScrollView,
+    View,
+    StyleSheet,
+} from "react-native";
+import {
+    Gesture,
+    GestureDetector,
+    GestureHandlerRootView,
+    RefreshControl,
+} from "react-native-gesture-handler";
+import Animated, {
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
+} from "react-native-reanimated";
 import ParkingLot from "@/components/ParkingLot";
 import ThemedView from "@/components/shared/ThemedView";
 import ThemedPressable from "@/components/shared/ThemedPressable";
@@ -11,40 +26,25 @@ import {getAvailableZonesStrips} from "@/services/parkingService";
 import Spinner from "./ui/spinner/Spinner";
 import ErrorPage from "@/components/ErrorPage";
 import {useThemeColor} from "@/hooks/useThemeColor";
+import {Image} from "expo-image";
+import {Ionicons} from "@expo/vector-icons";
+import CircleDecoration from "@/components/ui/decoration/CircleDecoration";
 
 interface ParkingZoneProps {
     id: string | string[];
+    name?: string;
+    identifier?: string;
 }
 
-type ImageById = {
-    id: number;
-    image: ImageSourcePropType;
-}
+const imageById = [
+    {id: 1, image: require("@/assets/images/map/zone1.jpg")},
+    {id: 2, image: require("@/assets/images/map/zone2.jpg")},
+    {id: 3, image: require("@/assets/images/map/zone3.jpg")},
+    {id: 4, image: require("@/assets/images/map/zone2.jpg")},
+    {id: 5, image: require("@/assets/images/map/zone4.jpg")},
+];
 
-const imageById: ImageById[] = [
-    {
-        id: 1,
-        image: require("@/assets/images/map/zone1.jpg") as ImageSourcePropType,
-    },
-    {
-        id: 2,
-        image: require("@/assets/images/map/zone2.jpg") as ImageSourcePropType,
-    },
-    {
-        id: 3,
-        image: require("@/assets/images/map/zone3.jpg") as ImageSourcePropType,
-    },
-    {
-        id: 4,
-        image: require("@/assets/images/map/zone2.jpg") as ImageSourcePropType,
-    },
-    {
-        id: 5,
-        image: require("@/assets/images/map/zone4.jpg") as ImageSourcePropType,
-    }
-]
-
-const ParkingZone = ({id}: ParkingZoneProps) => {
+const ParkingZone = ({id, name, identifier}: ParkingZoneProps) => {
     const [strips, setStrips] = useState("1");
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -53,6 +53,8 @@ const ParkingZone = ({id}: ParkingZoneProps) => {
     const primary = useThemeColor({}, "primary");
     const primaryContainer = useThemeColor({}, "primaryContainer");
     const textPrimary = useThemeColor({}, "text.primary");
+    const onPrimary = useThemeColor({}, 'onPrimary');
+    const outlineVariant = useThemeColor({}, "outlineVariant");
 
     const translateX = useSharedValue(0);
     const translateY = useSharedValue(0);
@@ -63,12 +65,8 @@ const ParkingZone = ({id}: ParkingZoneProps) => {
     const doubleTap = Gesture.Tap().numberOfTaps(2).onStart((event) => {
         if (scaleImage.value === 1) {
             scaleImage.value = 2;
-
-            const offsetX = event.absoluteX - 200; // Ajusta según el tamaño de la imagen
-            const offsetY = event.absoluteY - 300;
-
-            translateX.value = -offsetX;
-            translateY.value = -offsetY;
+            translateX.value = -event.absoluteX + 200;
+            translateY.value = -event.absoluteY + 300;
         } else {
             scaleImage.value = 1;
             translateX.value = 0;
@@ -88,25 +86,18 @@ const ParkingZone = ({id}: ParkingZoneProps) => {
             }
         });
 
-    const imageStyle = useAnimatedStyle(() => {
-        return {
-            transform: [
-                {translateX: withSpring(translateX.value)},
-                {translateY: withSpring(translateY.value)},
-                {scale: withSpring(scaleImage.value)},
-            ],
-        };
-    });
+    const imageStyle = useAnimatedStyle(() => ({
+        transform: [
+            {translateX: withSpring(translateX.value)},
+            {translateY: withSpring(translateY.value)},
+            {scale: withSpring(scaleImage.value)},
+        ],
+    }));
 
     const stripsAvailable = useQuery({
         queryKey: ["strips", id],
         queryFn: () => getAvailableZonesStrips(id),
-        retry: true,
-        retryDelay: 5000,
         refetchInterval: 5000,
-        refetchOnWindowFocus: true,
-        refetchOnReconnect: true,
-        refetchIntervalInBackground: true,
     });
 
     if (stripsAvailable.isError) {
@@ -118,81 +109,139 @@ const ParkingZone = ({id}: ParkingZoneProps) => {
 
     return (
         <ScrollView
-            refreshControl={<RefreshControl refreshing={stripsAvailable.isLoading}
-                                            onRefresh={() => stripsAvailable.refetch()}/>}
+            refreshControl={
+                <RefreshControl
+                    refreshing={stripsAvailable.isLoading}
+                    onRefresh={() => stripsAvailable.refetch()}
+                />
+            }
         >
             <ThemedView className="items-center justify-center px-4">
-                <View className="w-full items-center my-5">
-                    <ThemedText type="h2" className="text-center font-bold" style={{color: textPrimary}}>
-                        Zona de Parqueo {id}
-                    </ThemedText>
-                    <View className="border-b-2 w-1/2 mt-2" style={{borderColor}}/>
-                </View>
+                <CircleDecoration style={{top: 40, left: -100}}/>
+                <CircleDecoration style={{bottom: -100, right: -80}}/>
 
-                <View
-                    className="w-full p-4 rounded-lg mt-2 mb-2"
-                    style={{
-                        shadowColor: "rgba(0, 0, 0, 0.2)",
-                        shadowOffset: {width: 0, height: 2},
-                        shadowOpacity: 1,
-                        shadowRadius: 4,
-                    }}
+                <View className="w-full p-4 rounded-xl my-2 shadow-md "
+                      style={{
+                          backgroundColor: onPrimary
+                      }}
                 >
+                    <View className="w-full items-center px-4 mb-6">
+                        <View
+                            className="w-full p-4 rounded-2xl shadow-md items-center"
+                            style={{backgroundColor: primaryContainer}}
+                        >
+                            <View className="p-2 rounded-full bg-white/30 mb-2">
+                                <Ionicons name="location-outline" size={28} color={primary}/>
+                            </View>
+
+                            <ThemedText
+                                type="h4"
+                                className="font-extrabold tracking-wide text-center"
+                            >
+                                Bloque de Parqueo {identifier}: {name}
+                            </ThemedText>
+
+                            <View
+                                className="h-1.5 w-1/3 rounded-full mt-2"
+                                style={{backgroundColor: primary}}
+                            />
+                        </View>
+                    </View>
+
+
                     <View className="flex-row justify-between items-center">
                         <ThemedText type="h4" className="font-semibold">
                             Mapa de Parqueos
                         </ThemedText>
-                        <ThemedPressable title={"Ver mapa"} icon={"map"} onPress={() => setModalVisible(true)}/>
+                        <ThemedPressable title="Ver mapa" icon="map" onPress={() => setModalVisible(true)}/>
                     </View>
+                    <View className="border-b my-2 mb-4" style={{borderColor}}/>
 
-                    <View className="border-b my-2" style={{borderColor}}/>
+                    {stripsAvailable.isLoading ? (
+                        <Spinner text="Cargando franjas disponibles"/>
+                    ) : (
+                        <View className="mt-3 mb-4 items-center">
+                            <ThemedText type="caption" className="text-center mb-2" style={{color: textPrimary}}>
+                                Seleccione una franja para ver los parqueos disponibles
+                            </ThemedText>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                                <View className="flex-row gap-x-2 items-center justify-around ">
+                                    {stripsData?.strips.map(({zone_id, strip_name, strip_identifier, free_spaces}) => (
+                                        <ThemedPressable
+                                            key={zone_id + "-" + strip_identifier}
+                                            icon="map"
+                                            size={16}
+                                            title={`Franja ${strip_name}`}
+                                            disabled={free_spaces === "0"}
+                                            className={`rounded-lg px-3 py-2 ${free_spaces === "0" ? "opacity-50" : ""}`}
+                                            isActive={strips === strip_identifier.toString()}
+                                            onPress={() => setStrips(strip_identifier.toString())}
+                                        />
+                                    ))}
+                                </View>
+                            </ScrollView>
+                        </View>
+                    )}
+
+                    {freeSpaces && (
+                        <View
+                            className=" mt-5 my-4 px-4 py-3 rounded-xl shadow-md flex-row items-center gap-x-2"
+                            style={{backgroundColor: primaryContainer}}
+                        >
+                            <View className="flex-row items-center gap-x-2">
+                                <Ionicons name="car-sport-outline" size={24} color={primary}/>
+                                <ThemedText type="subtitle1" className="font-bold">
+                                    Espacios disponibles:
+                                </ThemedText>
+                            </View>
+                            <ThemedText type="h2">
+                                {freeSpaces}
+                            </ThemedText>
+                        </View>
+                    )}
                 </View>
 
-                {stripsAvailable.isLoading ? (
-                    <Spinner text="Cargando franjas disponibles"/>
-                ) : (
-                    <>
-                        <ThemedText type="caption" className="text-center mb-2" style={{color: textPrimary}}>
-                            Seleccione una franja para ver los parqueos disponibles
-                        </ThemedText>
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                            <View className="flex-row gap-x-2 items-center justify-around">
-                                {stripsData?.strips.map(({zone_id, strip_name, strip_identifier}) => (
-                                    <ThemedPressable
-                                        key={zone_id + "-" + strip_identifier}
-                                        icon={"map"}
-                                        size={16}
-                                        title={`Franja ${strip_name}`}
-                                        className="px-3 py-2 rounded-lg shadow-md"
-                                        style={{
-                                            backgroundColor: primaryContainer,
-                                        }}
-                                        onPress={() => {
-                                            setStrips(strip_identifier.toString());
-                                        }}
-                                    />
-                                ))}
+
+                <View
+                    className="w-full mt-4 mb-6 p-4 rounded-2xl shadow-md"
+                    style={{ backgroundColor: outlineVariant }}
+                >
+                    {/* Encabezado con icono */}
+                    <View className="flex-row items-center justify-between mb-3">
+                        <View className="flex-row items-center gap-x-2">
+                            <View className="p-2 rounded-full">
+                                <Ionicons name="navigate-circle-outline" size={22} color={primary}/>
                             </View>
-                        </ScrollView>
-                    </>
-                )}
+                            <ThemedText type="h4" className="font-bold">
+                                Plano Interactivo
+                            </ThemedText>
+                        </View>
 
-                {freeSpaces && (
-                    <ThemedText type="subtitle1" className="text-center font-bold mt-4" style={{color: primary}}>
-                        Espacios disponibles: {freeSpaces}
+                        <Ionicons name="map-outline" size={20} color={primary}/>
+                    </View>
+
+                    <ThemedText
+                        type="caption"
+                        className="text-center mt-4"
+                    >
+                        Usa gestos para mover el mapa
                     </ThemedText>
-                )}
 
-                <ParkingLot id={id} strips={strips}/>
+                    <View
+                        className="rounded-xl overflow-hidden"
+                    >
+                        <ParkingLot id={id} strips={strips}/>
+                    </View>
+
+                </View>
+
 
                 {!stripsAvailable.isLoading && (
                     <ThemedPressable
                         className="mb-6 px-5 py-3 rounded-lg shadow-lg"
-                        icon={"car"}
+                        icon="car"
                         title={`Parquear en la zona ${id}, franja ${strips}`}
-                        style={{
-                            backgroundColor: primary,
-                        }}
+                        style={{backgroundColor: primary}}
                         onPress={() => console.log("Parquear")}
                     />
                 )}
@@ -200,22 +249,8 @@ const ParkingZone = ({id}: ParkingZoneProps) => {
                 <Modal visible={modalVisible} transparent animationType="fade">
                     <GestureHandlerRootView className="flex-1">
                         <View className="flex-1 justify-center items-center">
-                            {/* Fondo difuminado adaptado al tema */}
-                            <View
-                                className="absolute inset-0"
-                                style={{
-                                    backgroundColor: `${backgroundColor}90`, // Fondo semitransparente con opacidad del 50%
-                                    filter: "blur(8px)", // Aplica difuminado
-                                }}
-                            />
-
-
-                            <ThemedView
-                                className="rounded-lg shadow-lg w-4/5 h-1/2 p-6"
-                                style={{
-                                    borderWidth: 1,
-                                }}
-                            >
+                            <View className="absolute inset-0" style={{backgroundColor: `${backgroundColor}90`}}/>
+                            <ThemedView className="rounded-lg shadow-lg w-4/5 h-1/2 p-6" style={{borderWidth: 1}}>
                                 <ThemedText type="caption" className="text-center mt-3 mb-3"
                                             style={{color: textPrimary}}>
                                     Toque dos veces para ampliar la imagen
@@ -245,10 +280,10 @@ const ParkingZone = ({id}: ParkingZoneProps) => {
                         </View>
                     </GestureHandlerRootView>
                 </Modal>
-
             </ThemedView>
         </ScrollView>
     );
 };
+
 
 export default ParkingZone;
