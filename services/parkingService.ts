@@ -1,5 +1,5 @@
 import axios, {isAxiosError} from "axios";
-import {ParkingsSpacesSchema, StripsSchema, ZonesSchema} from "@/types";
+import {MapSchema, ParkingsSpacesSchema, StripsSchema, ZonesSchema} from "@/types";
 
 const API_URL = String(process.env.EXPO_PUBLIC_API_URL);
 // export const getParkingAvailable = async (text: string) => {
@@ -30,11 +30,24 @@ export const getAvailableZones = async () => {
     }
 }
 
+export const getAvailableMap = async (zoneId : string | string[], stripId: string) => {
+    try {
+        const {data} = await axios.get(`${API_URL}/parkings/zones/${zoneId}/strips/${stripId}/map`);
+        const response = MapSchema.safeParse(data);
+        if (response.success) {
+            return response.data;
+        }
+    } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            throw new Error(error.response?.data.error)
+        }
+    }
+}
+
 export const getAvailableZonesStrips = async (zoneId : string | string[]) => {
     try {
         const {data} = await axios.get(`${API_URL}/parkings/zones/${zoneId}/strips`);
         const response = StripsSchema.safeParse(data);
-        console.log(response);
         if (response.success) {
             return response.data;
         }

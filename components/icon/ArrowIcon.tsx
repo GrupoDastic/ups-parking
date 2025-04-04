@@ -7,13 +7,13 @@ interface ArrowIconProps extends SvgProps {
     y: number;
 }
 
-const ArrowIcon = ({x, y, ...rest}: ArrowIconProps) => {
+const ArrowIcon = ({x, y, width, height, viewBox, ...rest}: ArrowIconProps) => {
 
     const fillColor = useThemeColor({}, 'text.primary');
 
     return (
         <Svg
-            width="390" height="580" viewBox="0 0 390 580"
+            width={width} height={height} viewBox={viewBox}
             {...rest}
         >
             <G transform={`translate(${x}, ${y})`}>

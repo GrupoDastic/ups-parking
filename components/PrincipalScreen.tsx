@@ -116,8 +116,7 @@ const PrincipalScreen = () => {
                                                 disabled={available_spaces === "0"}
                                                 className={available_spaces === "0" ? "opacity-50" : ""}
                                             >
-                                                <ZoneCard zoneIdentifier={zone_identifier} zoneName={zone_name} availableSpaces={available_spaces}
-                                                />
+                                                <ZoneCard zoneIdentifier={zone_identifier} zoneName={zone_name} availableSpaces={available_spaces}/>
                                             </TouchableOpacity>
                                         ))}
                                     </View>

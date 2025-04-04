@@ -35,7 +35,6 @@ export const ParkingSpaceSchema = z.object({
     type: z.string(),
     status: z.string(),
     number: z.number(),
-    plate: z.string().nullable(),
     last_updated: z.string(),
     position_x: z.number(),
     position_y: z.number(),
@@ -54,3 +53,15 @@ export const ParkingsSpacesSchema = z.object({
 export type ParkingSpace = z.infer<typeof ParkingSpaceSchema>;
 export type ParkingsSpaces = z.infer<typeof ParkingsSpacesSchema>;
 
+export const MapSchema = z.object({
+    map: z.array(
+        z.object({
+            zone_id: z.string(),
+            strip_identifier: z.number(),
+            svg_content: z.string(),
+            width: z.number(),
+            height: z.number(),
+            viewbox: z.string()
+        })
+    )
+})

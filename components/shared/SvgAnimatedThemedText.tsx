@@ -1,8 +1,8 @@
-import Svg, {G, Text as SvgText, Rect} from "react-native-svg";
+import Svg, {G, Rect, Text as SvgText} from "react-native-svg";
 import {useThemeColor} from "@/hooks/useThemeColor";
-import {TextProps, Pressable} from "react-native";
+import {TextProps} from "react-native";
 import {Colors} from "@/constants/Colors";
-import Animated, {useSharedValue, useAnimatedProps, withTiming} from "react-native-reanimated";
+import Animated, {useAnimatedProps, useSharedValue, withTiming} from "react-native-reanimated";
 
 export interface SvgThemedTextProps extends TextProps {
     x: number;
@@ -14,24 +14,30 @@ export interface SvgThemedTextProps extends TextProps {
     onPress?: () => void;
     withBackground?: boolean;
     fontWeight?: string;
+    width?: number;
+    height?: number;
+    viewBox?: string;
 }
 
 const AnimatedSvgText = Animated.createAnimatedComponent(SvgText);
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
 const SvgAnimatedThemedText = ({
-                           children,
-                           x,
-                           y,
-                           fontSize = "16",
-                           textAnchor = "middle",
-                           rotate = 0,
-                           freeSpace,
-                           onPress,
-                           withBackground = false,
-                           fontWeight,
-                           ...rest
-                       }: SvgThemedTextProps) => {
+                                   children,
+                                   x,
+                                   y,
+                                   fontSize = "16",
+                                   textAnchor = "middle",
+                                   rotate = 0,
+                                   freeSpace,
+                                   onPress,
+                                   withBackground = false,
+                                   fontWeight,
+                                   width = 390,
+                                   height = 580,
+                                   viewBox = "0 0 390 580",
+                                   ...rest
+                               }: SvgThemedTextProps) => {
     const textColor = useThemeColor({}, "text.primary");
     const secondaryColor = useThemeColor({}, "secondary");
     const backgroundColor = Colors.light.onPrimaryContainer;
@@ -61,7 +67,7 @@ const SvgAnimatedThemedText = ({
     }));
 
     return (
-        <Svg width="390" height="580" viewBox="0 0 390 580">
+        <Svg width={width} height={height} viewBox={viewBox}>
             <G transform={`rotate(${rotate}, ${x}, ${y})`} onPress={handlePress}>
                 {withBackground && (
                     <AnimatedRect
