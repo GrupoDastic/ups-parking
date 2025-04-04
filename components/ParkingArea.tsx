@@ -203,48 +203,62 @@ const ParkingZone = ({id, name, identifier}: ParkingZoneProps) => {
 
 
                 <View
-                    className="w-full mt-4 mb-6 p-4 rounded-2xl shadow-md"
+                    className="w-full p-4 rounded-2xl shadow-md mt-6 mb-8"
                     style={{ backgroundColor: outlineVariant }}
                 >
-                    {/* Encabezado con icono */}
-                    <View className="flex-row items-center justify-between mb-3">
-                        <View className="flex-row items-center gap-x-2">
-                            <View className="p-2 rounded-full">
-                                <Ionicons name="navigate-circle-outline" size={22} color={primary}/>
+                    {/* Encabezado tipo card */}
+                    <View className="w-full items-center px-4 mb-4">
+                        <View
+                            className="w-full p-4 rounded-2xl shadow-sm items-center"
+                            style={{ backgroundColor: primaryContainer }}
+                        >
+                            <View className="p-2 rounded-full bg-white/30 mb-2">
+                                <Ionicons name="navigate-circle-outline" size={28} color={primary} />
                             </View>
-                            <ThemedText type="h4" className="font-bold">
+
+                            <ThemedText
+                                type="h4"
+                                className="font-extrabold tracking-wide text-center"
+                                style={{ color: primary }}
+                            >
                                 Plano Interactivo
                             </ThemedText>
-                        </View>
 
-                        <Ionicons name="map-outline" size={20} color={primary}/>
+                            <View
+                                className="h-1.5 w-1/3 rounded-full mt-2"
+                                style={{ backgroundColor: primary }}
+                            />
+                        </View>
                     </View>
 
+                    {/* Texto guía */}
                     <ThemedText
                         type="caption"
-                        className="text-center mt-4"
+                        className="text-center mt-2 mb-4"
+                        style={{ color: textPrimary }}
                     >
-                        Usa gestos para mover el mapa
+                        Usa gestos para mover y ampliar el mapa
                     </ThemedText>
 
-                    <View
-                        className="rounded-xl overflow-hidden"
-                    >
-                        <ParkingLot id={id} strips={strips}/>
+                    {/* Contenedor del mapa */}
+                    <View className="rounded-xl overflow-hidden shadow-md">
+                        <ParkingLot id={id} strips={strips} />
                     </View>
 
+                    {!stripsAvailable.isLoading && (
+                        <ThemedPressable
+                            className="mb-6 px-5 py-3 rounded-lg shadow-lg"
+                            icon="car"
+                            title={`Parquear en la zona ${id}, franja ${strips}`}
+                            style={{backgroundColor: primary}}
+                            onPress={() => console.log("Parquear")}
+                        />
+                    )}
                 </View>
 
 
-                {!stripsAvailable.isLoading && (
-                    <ThemedPressable
-                        className="mb-6 px-5 py-3 rounded-lg shadow-lg"
-                        icon="car"
-                        title={`Parquear en la zona ${id}, franja ${strips}`}
-                        style={{backgroundColor: primary}}
-                        onPress={() => console.log("Parquear")}
-                    />
-                )}
+
+
 
                 <Modal visible={modalVisible} transparent animationType="fade">
                     <GestureHandlerRootView className="flex-1">

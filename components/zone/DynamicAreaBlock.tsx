@@ -1,12 +1,12 @@
 import React from "react";
-import Svg, { G, SvgXml } from "react-native-svg";
-import { View } from "react-native";
+import Svg, {G, SvgXml} from "react-native-svg";
+import {View} from "react-native";
 import CarIcon from "@/components/icon/CarIcon";
 import PregnantIcon from "@/components/icon/PregnantIcon";
 import DisabledIcon from "@/components/icon/DisabledIcon";
 import StripsIcon from "@/components/icon/StripsIcon";
 import SvgAnimatedThemedText from "@/components/shared/SvgAnimatedThemedText";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import {useThemeColor} from "@/hooks/useThemeColor";
 
 interface ParkingSpace {
     id: string;
@@ -43,7 +43,7 @@ const ParkingIcon = ({
     width: number;
     height: number;
 }) => {
-    const commonProps = { x, y, viewBox, width, height };
+    const commonProps = {x, y, viewBox, width, height};
 
     if (status === "occupied") return <CarIcon {...commonProps} />;
     if (type === "strips") return <StripsIcon {...commonProps} />;
@@ -84,11 +84,12 @@ const DynamicAreaBlock = ({
     return (
         <View className="items-center justify-center mb-6 mt-6">
             <Svg width={width} height={height} viewBox={viewBox}>
-                <SvgXml xml={svgXml} width={width} height={height} />
+                <G pointerEvents="none">
+                    <SvgXml xml={svgXml} width={width} height={height}/>
+                </G>
 
-                <G>
-                    {/* Íconos */}
-                    {parkingSpacesData?.map(({ id, type, status, position_x, position_y }) => {
+                <G pointerEvents="box-none">
+                    {parkingSpacesData?.map(({id, type, status, position_x, position_y}) => {
                         if (
                             position_x < 0 || position_x > width ||
                             position_y < 0 || position_y > height
@@ -107,9 +108,9 @@ const DynamicAreaBlock = ({
                             />
                         );
                     })}
-
-                    {/* Textos */}
-                    {parkingSpacesData?.map(({ id, identifier, type, status, position_x, position_y }) => {
+                </G>
+                <G pointerEvents="box-none">
+                    {parkingSpacesData?.map(({id, identifier, type, status, position_x, position_y}) => {
                         if (["strips", "pregnant", "disabled"].includes(type) || status === "occupied") return null;
 
                         const x = position_x > width / 2 ? position_x - 50 : position_x + 30;

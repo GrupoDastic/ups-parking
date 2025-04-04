@@ -1,8 +1,8 @@
-import Svg, {G, Rect, Text as SvgText} from "react-native-svg";
-import {useThemeColor} from "@/hooks/useThemeColor";
-import {TextProps} from "react-native";
-import {Colors} from "@/constants/Colors";
-import Animated, {useAnimatedProps, useSharedValue, withTiming} from "react-native-reanimated";
+import { G, Rect, Text as SvgText } from "react-native-svg";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { TextProps } from "react-native";
+import { useState } from "react";
+import { Colors } from "@/constants/Colors";
 
 export interface SvgThemedTextProps extends TextProps {
     x: number;
@@ -19,9 +19,6 @@ export interface SvgThemedTextProps extends TextProps {
     viewBox?: string;
 }
 
-const AnimatedSvgText = Animated.createAnimatedComponent(SvgText);
-const AnimatedRect = Animated.createAnimatedComponent(Rect);
-
 const SvgAnimatedThemedText = ({
                                    children,
                                    x,
@@ -33,65 +30,44 @@ const SvgAnimatedThemedText = ({
                                    onPress,
                                    withBackground = false,
                                    fontWeight,
-                                   width = 390,
-                                   height = 580,
-                                   viewBox = "0 0 390 580",
-                                   ...rest
                                }: SvgThemedTextProps) => {
     const textColor = useThemeColor({}, "text.primary");
     const secondaryColor = useThemeColor({}, "secondary");
     const backgroundColor = Colors.light.onPrimaryContainer;
 
-    const textColorValue = useSharedValue(freeSpace ? secondaryColor : textColor);
-
-    const backgroundColorValue = useSharedValue(backgroundColor);
+    const [pressed, setPressed] = useState(false);
 
     const handlePress = () => {
-        textColorValue.value = withTiming("#FF5733", {duration: 200});
-        backgroundColorValue.value = withTiming("#FFC300", {duration: 200});
-
+        setPressed(true);
+        onPress?.();
         setTimeout(() => {
-            textColorValue.value = withTiming(freeSpace ? secondaryColor : textColor, {duration: 200});
-            backgroundColorValue.value = withTiming(backgroundColor, {duration: 200});
+            setPressed(false);
         }, 300);
-
-
     };
 
-    const animatedTextProps = useAnimatedProps(() => ({
-        fill: textColorValue.value,
-    }));
-
-    const animatedBackgroundProps = useAnimatedProps(() => ({
-        fill: backgroundColorValue.value,
-    }));
-
     return (
-        <Svg width={width} height={height} viewBox={viewBox}>
-            <G transform={`rotate(${rotate}, ${x}, ${y})`} onPress={handlePress}>
-                {withBackground && (
-                    <AnimatedRect
-                        animatedProps={animatedBackgroundProps}
-                        x={x - 27}
-                        y={y - 15}
-                        width={70}
-                        height={35}
-                        rx={6}
-                    />
-                )}
-                <AnimatedSvgText
-                    animatedProps={animatedTextProps}
-                    x={x + 7}
-                    y={y + 7}
-                    fontSize={fontSize}
-                    textAnchor={textAnchor}
-                    fontWeight={fontWeight}
-                    {...rest}
-                >
-                    {children}
-                </AnimatedSvgText>
-            </G>
-        </Svg>
+        <G transform={`rotate(${rotate}, ${x}, ${y})`} onPress={handlePress}>
+            {withBackground && (
+                <Rect
+                    x={x - 27}
+                    y={y - 15}
+                    width={70}
+                    height={35}
+                    rx={6}
+                    fill={pressed ? "#FFC300" : backgroundColor}
+                />
+            )}
+            <SvgText
+                x={x + 7}
+                y={y + 7}
+                fontSize={fontSize}
+                textAnchor={textAnchor}
+                fontWeight={fontWeight}
+                fill={pressed ? "#FF5733" : (freeSpace ? secondaryColor : textColor)}
+            >
+                {children}
+            </SvgText>
+        </G>
     );
 };
 
