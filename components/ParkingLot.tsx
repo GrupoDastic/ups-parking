@@ -39,7 +39,6 @@ const ParkingLot = ({ id, strips }: ParkingLotProps) => {
 
     const { width, height, viewbox, svg_content } = mapQuery.data.map[0];
 
-    console.log(height)
 
 
     return (

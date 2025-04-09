@@ -1,6 +1,8 @@
 import * as React from "react";
 import Svg, { SvgProps, G, Path } from "react-native-svg";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import {Colors} from "@/constants/Colors";
+import {useTheme} from "@react-navigation/core";
 
 interface CarIconProps extends SvgProps {
     x: number;
@@ -20,7 +22,14 @@ const CarIcon = ({
                      height = 55,
                      ...props
                  }: CarIconProps) => {
-    const fillColor = useThemeColor({}, "text.primary");
+    const theme = useTheme();
+
+    const vehicleColors = Colors[theme.dark ? "dark" : "light"].vehicleColors;
+
+    const randomColor = React.useMemo(() => {
+        const index = Math.floor(Math.random() * vehicleColors.length);
+        return vehicleColors[index];
+    }, []);
 
     return (
         <Svg
@@ -31,7 +40,7 @@ const CarIcon = ({
         >
             <G transform={`translate(${x}, ${y}) ${rotate ? "rotate(180)" : ""}`}>
                 <Path
-                    fill={fillColor}
+                    fill={randomColor}
                     fillRule="evenodd"
                     stroke="#000"
                     strokeMiterlimit={22.926}

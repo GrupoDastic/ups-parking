@@ -17,6 +17,7 @@ import ThemedPressable from "@/components/shared/ThemedPressable";
 import {useThemeColor} from "@/hooks/useThemeColor";
 import {RefreshControl} from 'react-native-gesture-handler';
 
+
 const PrincipalScreen = () => {
     const router = useRouter();
     const queryClient = useQueryClient();
@@ -53,6 +54,11 @@ const PrincipalScreen = () => {
         })
         zonesAvailable.refetch().then()
     }
+    const priorityOrder = ["B", "D", "C", "H", "E", "G"];
+
+    const sortedZones = zones?.zones.sort((a, b) => {
+        return priorityOrder.indexOf(a.zone_identifier) - priorityOrder.indexOf(b.zone_identifier);
+    });
 
 
     return (
@@ -117,7 +123,7 @@ const PrincipalScreen = () => {
                                                     }
                                         */}
 
-                                        {zones?.zones.map(({zone_id, zone_identifier, zone_name, available_spaces}) => (
+                                        {sortedZones?.map(({zone_id, zone_identifier, zone_name, available_spaces}) => (
                                             <TouchableOpacity
                                                 key={zone_id}
                                                 onPress={() => router.push({
@@ -143,7 +149,7 @@ const PrincipalScreen = () => {
 
                     <Image
                         style={styles.carImage}
-                        source={require('@/assets/images/main-car.png')}
+                        source={require('@/assets/images/icono.png')}
                     />
 
                     <View className="w-4/5 rounded-xl p-4 mb-2 mx-4 shadow-lg items-center"

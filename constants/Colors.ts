@@ -45,7 +45,27 @@ export const Colors = {
             primary: "#1A1B1E",
             error: "#BA1A1A",
             success: "#177400",
-        }
+        },
+        vehicleColors: [
+            "#FF0000", // Rojo
+            "#FFA500", // Naranja
+            "#FFFF00", // Amarillo
+            "#008000", // Verde
+            "#0000FF", // Azul
+            "#4B0082", // Índigo
+            "#800080", // Púrpura
+            "#A52A2A", // Marrón
+            "#000000", // Negro
+            "#FFFFFF", // Blanco
+            "#808080", // Gris medio
+            "#C0C0C0", // Gris claro
+            "#696969", // Gris oscuro
+            "#00CED1", // Turquesa fuerte
+            "#DC143C", // Carmesí
+            "#228B22", // Verde bosque
+            "#1E90FF", // Azul dodger
+            "#B22222", // Rojo fuego
+        ]
     },
     dark: {
         primary: "#AAC7FF",
@@ -69,9 +89,9 @@ export const Colors = {
         surface: "#1A1B1E",
         onSurface: "#E3E2E6",
         surfaceVariant: "#193a76", //#44474E
-        onSurfaceVariant: "#C4C6D0",
+        onSurfaceVariant: "#abadb5",
         outline: "#8E9099",
-        outlineVariant: "#44474E",
+        outlineVariant: "#78797d",
         shadow: "#000000",
         scrim: "#000000",
         inverseSurface: "#E3E2E6",
@@ -93,6 +113,29 @@ export const Colors = {
             primary: "#E3E2E6",
             error: "#FFB4AB",
             success: "#177400",
-        }
+        },
+        vehicleColors: [
+            "#FF0000", // Rojo
+            "#FFA500", // Naranja
+            "#FFFF00", // Amarillo
+            "#008000", // Verde
+            "#0000FF", // Azul
+            "#4B0082", // Índigo
+            "#800080", // Púrpura
+            "#A52A2A", // Marrón
+            "#000000", // Negro
+            "#FFFFFF", // Blanco
+            "#808080", // Gris medio
+            "#C0C0C0", // Gris claro
+            "#696969", // Gris oscuro
+            "#00CED1", // Turquesa fuerte
+            "#DC143C", // Carmesí
+            "#228B22", // Verde bosque
+            "#1E90FF", // Azul dodger
+            "#B22222", // Rojo fuego
+        ]
+
     },
+
+
 };

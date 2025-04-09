@@ -65,7 +65,7 @@ const DynamicAreaBlock = ({
 
     let cleanedSvgContent = svgContent
         .replace(/\$\$/g, "")
-        .replace(/<rect[^>]*fill="[^"]*"[^>]*\/>/gi, "")
+        //.replace(/<rect[^>]*fill="[^"]*"[^>]*\/>/gi, "")
         .replace(
             /transform="matrix\((-?\d+\.?\d*) 0 0 (-?\d+\.?\d*) (\d+\.?\d*) (\d+\.?\d*)\)"/g,
             (_match, scaleX, scaleY, translateX, translateY) =>
@@ -73,10 +73,8 @@ const DynamicAreaBlock = ({
         )
         .replace(/stroke="#FFE208"/gi, `stroke="${lineColor}"`);
 
-
     const svgXml = `
         <svg width="${width}" height="${height}" viewBox="${viewBox}" xmlns="http://www.w3.org/2000/svg">
-            <rect width="${width}" height="${height}" fill="${backgroundColor}" />
             ${cleanedSvgContent}
         </svg>
     `;

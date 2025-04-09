@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+  import React, {useState} from "react";
 import {
     ImageSourcePropType,
     Modal,
@@ -138,7 +138,7 @@ const ParkingZone = ({id, name, identifier}: ParkingZoneProps) => {
                                 type="h4"
                                 className="font-extrabold tracking-wide text-center"
                             >
-                                Bloque de Parqueo {identifier}: {name}
+                                Bloque {identifier}: {name}
                             </ThemedText>
 
                             <View
@@ -166,7 +166,9 @@ const ParkingZone = ({id, name, identifier}: ParkingZoneProps) => {
                             </ThemedText>
                             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                                 <View className="flex-row gap-x-2 items-center justify-around ">
-                                    {stripsData?.strips.map(({zone_id, strip_name, strip_identifier, free_spaces}) => (
+                                    {stripsData?.strips
+                                        .sort((a, b) => Number(a.strip_identifier) - Number(b.strip_identifier))
+                                        .map(({zone_id, strip_name, strip_identifier, free_spaces}) => (
                                         <ThemedPressable
                                             key={zone_id + "-" + strip_identifier}
                                             icon="map"
@@ -206,7 +208,6 @@ const ParkingZone = ({id, name, identifier}: ParkingZoneProps) => {
                     className="w-full p-4 rounded-2xl shadow-md mt-6 mb-8"
                     style={{ backgroundColor: outlineVariant }}
                 >
-                    {/* Encabezado tipo card */}
                     <View className="w-full items-center px-4 mb-4">
                         <View
                             className="w-full p-4 rounded-2xl shadow-sm items-center"
@@ -228,17 +229,18 @@ const ParkingZone = ({id, name, identifier}: ParkingZoneProps) => {
                                 className="h-1.5 w-1/3 rounded-full mt-2"
                                 style={{ backgroundColor: primary }}
                             />
+
+                            <ThemedText
+                                type="caption"
+                                className="text-center mt-2 mb-4"
+                                style={{ color: textPrimary }}
+                            >
+                                Usa gestos para mover y ampliar el mapa
+                            </ThemedText>
                         </View>
                     </View>
 
                     {/* Texto guía */}
-                    <ThemedText
-                        type="caption"
-                        className="text-center mt-2 mb-4"
-                        style={{ color: textPrimary }}
-                    >
-                        Usa gestos para mover y ampliar el mapa
-                    </ThemedText>
 
                     {/* Contenedor del mapa */}
                     <View className="rounded-xl overflow-hidden shadow-md">
