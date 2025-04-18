@@ -1,22 +1,8 @@
-  import React, {useState} from "react";
-import {
-    ImageSourcePropType,
-    Modal,
-    ScrollView,
-    View,
-    StyleSheet,
-} from "react-native";
-import {
-    Gesture,
-    GestureDetector,
-    GestureHandlerRootView,
-    RefreshControl,
-} from "react-native-gesture-handler";
-import Animated, {
-    useAnimatedStyle,
-    useSharedValue,
-    withSpring,
-} from "react-native-reanimated";
+import React, {useState} from "react";
+import {Modal, ScrollView, View,} from "react-native";
+import logger from "@/utils/logger";
+import {Gesture, GestureDetector, GestureHandlerRootView, RefreshControl,} from "react-native-gesture-handler";
+import Animated, {useAnimatedStyle, useSharedValue, withSpring,} from "react-native-reanimated";
 import ParkingLot from "@/components/ParkingLot";
 import ThemedView from "@/components/shared/ThemedView";
 import ThemedPressable from "@/components/shared/ThemedPressable";
@@ -26,7 +12,6 @@ import {getAvailableZonesStrips} from "@/services/parkingService";
 import Spinner from "./ui/spinner/Spinner";
 import ErrorPage from "@/components/ErrorPage";
 import {useThemeColor} from "@/hooks/useThemeColor";
-import {Image} from "expo-image";
 import {Ionicons} from "@expo/vector-icons";
 import CircleDecoration from "@/components/ui/decoration/CircleDecoration";
 
@@ -253,7 +238,7 @@ const ParkingZone = ({id, name, identifier}: ParkingZoneProps) => {
                             icon="car"
                             title={`Parquear en la zona ${id}, franja ${strips}`}
                             style={{backgroundColor: primary}}
-                            onPress={() => console.log("Parquear")}
+                            onPress={() => logger.info("User initiated parking action", { zone: id, strip: strips })}
                         />
                     )}
                 </View>

@@ -15,6 +15,7 @@ interface ParkingSpace {
     status: string;
     position_x: number;
     position_y: number;
+    orientation: string;
 }
 
 interface DynamicAreaBlockProps {
@@ -34,6 +35,7 @@ const ParkingIcon = ({
                          viewBox,
                          width,
                          height,
+                         rotate,
                      }: {
     type: string;
     status: string;
@@ -42,14 +44,23 @@ const ParkingIcon = ({
     viewBox: string;
     width: number;
     height: number;
+    rotate?: number;
 }) => {
-    const commonProps = {x, y, viewBox, width, height};
+    const commonProps = {x, y, viewBox, width, height, rotate};
 
-    if (status === "occupied") return <CarIcon {...commonProps} />;
-    if (type === "strips") return <StripsIcon {...commonProps} />;
-    if (type === "pregnant") return <PregnantIcon {...commonProps} />;
-    if (type === "disabled") return <DisabledIcon {...commonProps} />;
-    return null;
+    // Use a more declarative approach with a switch statement
+    switch (true) {
+        case status === "occupied":
+            return <CarIcon {...commonProps} />;
+        case type === "strips":
+            return <StripsIcon {...commonProps} />;
+        case type === "pregnant":
+            return <PregnantIcon {...commonProps} />;
+        case type === "disabled":
+            return <DisabledIcon {...commonProps} />;
+        default:
+            return null;
+    }
 };
 
 const DynamicAreaBlock = ({
@@ -59,13 +70,12 @@ const DynamicAreaBlock = ({
                               viewBox,
                               parkingSpacesData,
                           }: DynamicAreaBlockProps) => {
-    const backgroundColor = useThemeColor({}, "background");
 
     const lineColor = useThemeColor({}, "line");
 
     let cleanedSvgContent = svgContent
         .replace(/\$\$/g, "")
-        //.replace(/<rect[^>]*fill="[^"]*"[^>]*\/>/gi, "")
+        // We're keeping the rect elements with fill attributes as they're needed for the SVG rendering
         .replace(
             /transform="matrix\((-?\d+\.?\d*) 0 0 (-?\d+\.?\d*) (\d+\.?\d*) (\d+\.?\d*)\)"/g,
             (_match, scaleX, scaleY, translateX, translateY) =>
@@ -79,6 +89,26 @@ const DynamicAreaBlock = ({
         </svg>
     `;
 
+    const getRotation = (orientation: string, x: number, width: number): number => {
+        if (orientation === "vertical") return 90;
+        if (x > width / 2) return 180;
+        return 0;
+    };
+
+    const getAdjustedPosition = (type: string, status: string, position: number, offset: number): number => {
+        // Make the operator precedence explicit with parentheses
+        if (type === "disabled" || (type === "pregnant" && status === "occupied")) {
+            return position + offset;
+        }
+        return position;
+    };
+
+    const shouldSkipTextRendering = (type: string, status: string): boolean => {
+        // Skip text rendering for special types or occupied spaces
+        return ["strips", "pregnant", "disabled"].includes(type) || status === "occupied";
+    };
+
+
     return (
         <View className="items-center justify-center mb-6 mt-6">
             <Svg width={width} height={height} viewBox={viewBox}>
@@ -87,43 +117,39 @@ const DynamicAreaBlock = ({
                 </G>
 
                 <G pointerEvents="box-none">
-                    {parkingSpacesData?.map(({id, type, status, position_x, position_y}) => {
-                        if (
-                            position_x < 0 || position_x > width ||
-                            position_y < 0 || position_y > height
-                        ) return null;
+                    {parkingSpacesData?.map(({id, type, status, position_x, position_y, orientation}) => {
 
                         return (
                             <ParkingIcon
                                 key={`icon-${id}`}
                                 type={type}
                                 status={status}
-                                x={position_x}
-                                y={position_y}
+                                x={getAdjustedPosition(type, status, position_x, 27)}
+                                y={getAdjustedPosition(type, status, position_y, 22)}
                                 viewBox={viewBox}
                                 width={width}
                                 height={height}
+                                rotate={getRotation(orientation, position_x, width)}
                             />
                         );
                     })}
                 </G>
                 <G pointerEvents="box-none">
-                    {parkingSpacesData?.map(({id, identifier, type, status, position_x, position_y}) => {
-                        if (["strips", "pregnant", "disabled"].includes(type) || status === "occupied") return null;
-
-                        const x = position_x > width / 2 ? position_x - 50 : position_x + 30;
-                        const y = position_y > height / 2 ? position_y - 30 : position_y + 25;
+                    {parkingSpacesData?.map(({id, identifier, type, status, position_x, position_y, orientation}) => {
+                        // Skip rendering text for special types or occupied spaces
+                        if (shouldSkipTextRendering(type, status)) return null;
 
                         return (
                             <SvgAnimatedThemedText
                                 key={`text-${id}`}
-                                x={x}
-                                y={y}
+                                x={position_x}
+                                y={position_y}
                                 fontSize="18"
                                 freeSpace
                                 withBackground
                                 fontWeight={"bold"}
-                                onPress={() => console.log(`Spot ${id} pressed`)}
+                                rotate={orientation === "vertical" ? 270 : 0}
+                                onPress={() => {/* Handle spot press event */}}
                             >
                                 {identifier}
                             </SvgAnimatedThemedText>

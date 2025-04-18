@@ -1,9 +1,9 @@
-import { View, ScrollView } from "react-native";
-import { useQuery } from "@tanstack/react-query";
-import { getAvailableParkingSpaces, getAvailableMap } from "@/services/parkingService";
+import {ScrollView, View} from "react-native";
+import {useQuery} from "@tanstack/react-query";
+import {getAvailableMap, getAvailableParkingSpaces} from "@/services/parkingService";
 import Spinner from "./ui/spinner/Spinner";
 import ErrorPage from "@/components/ErrorPage";
-import DynamicAreaBlock from "./zone/DynamicAreaBlock";
+import DynamicAreaBlock from "@/components/zone/DynamicAreaBlock";
 
 interface ParkingLotProps {
     id: string | string[];

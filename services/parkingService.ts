@@ -1,20 +1,21 @@
 import axios, {isAxiosError} from "axios";
-import {MapSchema, ParkingsSpacesSchema, StripsSchema, ZonesSchema} from "@/types";
+import {DataResponseSchema, MapSchema, ParkingsSpacesSchema, StripsSchema, ZonesSchema} from "@/types";
 
 const API_URL = String(process.env.EXPO_PUBLIC_API_URL);
-// export const getParkingAvailable = async (text: string) => {
-//     try {
-//         const {data} = await axios.get(`${API_URL}/parkings/request?text=${text}`);
-//         const response = DataResponseSchema.safeParse(data);
-//         if (response.success) {
-//             return response.data;
-//         }
-//     } catch (error) {
-//         if (isAxiosError(error) && error.response) {
-//             throw new Error(error.response?.data.error)
-//         }
-//     }
-// }
+export const getParkingAvailable = async (text: string) => {
+    try {
+        const {data} = await axios.get(`${API_URL}/parkings/request?text=${text}`);
+        const response = DataResponseSchema.safeParse(data);
+        if (response.success) {
+            return response.data;
+        }
+    } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            throw new Error(error.response?.data.error)
+        }
+    }
+    return null;
+}
 
 export const getAvailableZones = async () => {
     try {
@@ -71,6 +72,3 @@ export const getAvailableParkingSpaces = async (zoneId : string | string[], stri
         }
     }
 }
-
-
-

@@ -4,6 +4,8 @@ import {useEffect} from "react";
 import ThemedPressable from "@/components/shared/ThemedPressable";
 import ThemedText from "@/components/shared/ThemedText";
 import {View} from "react-native";
+import * as Speech from 'expo-speech';
+import {getParkingAvailable} from "@/services/parkingService";
 
 interface SpeechRecognitionProps {
     className?: string;
@@ -23,18 +25,17 @@ export default function SpeechRecognition({className}: Readonly<SpeechRecognitio
             return;
         }
 
-        // getParkingAvailable(encodeURIComponent(transcript)).then((response) => {
-        //     if (response === null || response === undefined) {
-        //         Speech.speak("No se encontraron resultados", {
-        //             language: "es-ES",
-        //         });
-        //     } else {
-        //         Speech.speak(response.text, {
-        //             language: 'es-ES'
-        //         });
-        //
-        //     }
-        // });
+        getParkingAvailable(encodeURIComponent(transcript)).then((response) => {
+            if (response === null || response === undefined) {
+                Speech.speak("No se encontraron resultados", {
+                    language: "es-ES",
+                });
+            } else {
+                Speech.speak(response.text, {
+                    language: 'es-ES'
+                });
+            }
+        });
 
         setTranscript("");
     }
@@ -56,4 +57,3 @@ export default function SpeechRecognition({className}: Readonly<SpeechRecognitio
         </View>
     );
 };
-

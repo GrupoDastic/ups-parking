@@ -24,7 +24,6 @@ const SvgAnimatedThemedText = ({
                                    x,
                                    y,
                                    fontSize = "16",
-                                   textAnchor = "middle",
                                    rotate = 0,
                                    freeSpace,
                                    onPress,
@@ -49,19 +48,19 @@ const SvgAnimatedThemedText = ({
         <G transform={`rotate(${rotate}, ${x}, ${y})`} onPress={handlePress}>
             {withBackground && (
                 <Rect
-                    x={x - 27}
-                    y={y - 15}
+                    x={x - 35}
+                    y={y - 20}
                     width={70}
-                    height={35}
+                    height={40}
                     rx={6}
                     fill={pressed ? "#FFC300" : backgroundColor}
                 />
             )}
             <SvgText
-                x={x + 7}
-                y={y + 7}
+                x={x}
+                y={y + 6}
                 fontSize={fontSize}
-                textAnchor={textAnchor}
+                textAnchor="middle"
                 fontWeight={fontWeight}
                 fill={pressed ? "#FF5733" : (freeSpace ? secondaryColor : textColor)}
             >
