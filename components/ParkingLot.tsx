@@ -39,8 +39,6 @@ const ParkingLot = ({ id, strips }: ParkingLotProps) => {
 
     const { width, height, viewbox, svg_content } = mapQuery.data.map[0];
 
-
-
     return (
         <View style={{ height: height + 50 }}>
             <ScrollView horizontal>

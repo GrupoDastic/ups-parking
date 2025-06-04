@@ -34,6 +34,10 @@ const CarIcon = ({
                 return `translate(${x - offset + 10}, ${y - 2 - offset}) rotate(${rotate}, ${offset}, ${offset})`;
             case 270:
                 return `translate(${x - offset}, ${y - offset}) rotate(${rotate}, ${offset}, ${offset})`;
+            case 60:
+                return `translate(${x - 2 - offset}, ${y - 2 - offset}) rotate(${rotate}, ${offset}, ${offset})`;
+            case 30:
+                return `translate(${x - offset}, ${y - offset}) rotate(${rotate}, ${offset}, ${offset})`;
             default:
                 return `translate(${x - 10 - (offset)}, ${y + 2 - offset})`;
         }

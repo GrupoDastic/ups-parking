@@ -1,141 +1,121 @@
 export const Colors = {
     light: {
-        primary: "#2A5EA7",
+        /* iOS accent blue */
+        primary: "#0A84FF",
         onPrimary: "#FFFFFF",
-        primaryContainer: "#D6E3FF",
-        onPrimaryContainer: "#001B3E",
-        secondary: "#f5cc4a", //#F9BD00
+        primaryContainer: "#D6E8FF",        // very light blue tint
+        onPrimaryContainer: "#001E3C",
+
+        /* Gold accent reused for secondary */
+        secondary: "#F5CC4A",
         onSecondary: "#FFFFFF",
-        secondaryContainer: "#FFDF9B",
-        onSecondaryContainer: "#251A00",
-        tertiary: "#006874",
+        secondaryContainer: "#FFE9AD",
+        onSecondaryContainer: "#2B2000",
+
+        /* Teal tertiary for success/info */
+        tertiary: "#007D8C",
         onTertiary: "#FFFFFF",
-        tertiaryContainer: "#97F0FF",
-        onTertiaryContainer: "#001F24",
-        error: "#BA1A1A",
+        tertiaryContainer: "#C6F6FF",
+        onTertiaryContainer: "#002026",
+
+        error: "#FF3B30",
         onError: "#FFFFFF",
-        errorContainer: "#FFDAD6",
+        errorContainer: "#FFDAD5",
         onErrorContainer: "#410002",
-        background: "#f4f4f5",
-        onBackground: "#1A1B1E",
-        surface: "#FDFBFF",
-        onSurface: "#1A1B1E",
-        surfaceVariant: "#44474E", //#44474E
-        onSurfaceVariant: "#44474E",
-        outline: "#74777F",
-        outlineVariant: "#e0e0e0",
+
+        background: "#F2F3F7",              // softer than pure white
+        onBackground: "#1C1C1E",
+
+        surface: "#FFFFFF",
+        onSurface: "#1C1C1E",
+
+        surfaceVariant: "#ECECEC",
+        onSurfaceVariant: "#4C4C50",
+
+        outline: "#777B80",
+        outlineVariant: "#D1D1D6",
         shadow: "#000000",
-        scrim: "#000000",
-        inverseSurface: "#2F3033",
-        inverseOnSurface: "#F1F0F4",
-        inversePrimary: "#AAC7FF",
-        line: "#FFE208",
+
+        line: "#FFD800", // parking‑line yellow
+
+        /* Elevation follows Material‑3 style but softened */
         elevation: {
             level0: "transparent",
-            level1: "#F2F3FB",
-            level2: "#ECEEF8",
-            level3: "#E6EAF5",
-            level4: "#E4E8F4",
-            level5: "#E0E5F3",
+            level1: "#F7F8FA",
+            level2: "#F1F2F6",
+            level3: "#E9ECF2",
+            level4: "#E6E9F0",
+            level5: "#E3E6EE",
         },
-        surfaceDisabled: "rgba(26, 27, 30, 0.12)",
-        onSurfaceDisabled: "rgba(26, 27, 30, 0.38)",
-        backdrop: "rgba(45, 48, 56, 0.4)",
+
         text: {
-            primary: "#1A1B1E",
-            error: "#BA1A1A",
-            success: "#177400",
+            primary: "#1C1C1E",
+            error: "#FF3B30",
+            success: "#34C759",
         },
+
         vehicleColors: [
-            "#FF0000", // Rojo
-            "#FFA500", // Naranja
-            "#FFFF00", // Amarillo
-            "#008000", // Verde
-            "#0000FF", // Azul
-            "#4B0082", // Índigo
-            "#800080", // Púrpura
-            "#A52A2A", // Marrón
-            "#000000", // Negro
-            "#FFFFFF", // Blanco
-            "#808080", // Gris medio
-            "#C0C0C0", // Gris claro
-            "#696969", // Gris oscuro
-            "#00CED1", // Turquesa fuerte
-            "#DC143C", // Carmesí
-            "#228B22", // Verde bosque
-            "#1E90FF", // Azul dodger
-            "#B22222", // Rojo fuego
-        ]
+            "#FF453A", "#FF9F0A", "#FFD60A", "#32D74B", "#0A84FF", "#5E5CE6",
+            "#BF5AF2", "#A2845E", "#000000", "#FFFFFF", "#8E8E93", "#C7C7CC",
+            "#636366", "#64D2FF", "#FF375F", "#30D158", "#64A8FF", "#FF453A",
+        ],
     },
+
     dark: {
-        primary: "#AAC7FF",
-        onPrimary: "#002F64",
-        primaryContainer: "#00458D",
-        onPrimaryContainer: "#D6E3FF",
-        secondary: "#f5cc4a",
+        primary: "#0A84FF",
+        onPrimary: "#00356E",
+        primaryContainer: "#004B9F",
+        onPrimaryContainer: "#D6E8FF",
+
+        secondary: "#F5CC4A",
         onSecondary: "#3F2E00",
-        secondaryContainer: "#5B4300",
-        onSecondaryContainer: "#FFD79B",
+        secondaryContainer: "#614400",
+        onSecondaryContainer: "#FFE9AD",
+
         tertiary: "#4FD8EB",
         onTertiary: "#00363D",
-        tertiaryContainer: "#004F58",
-        onTertiaryContainer: "#97F0FF",
+        tertiaryContainer: "#00505A",
+        onTertiaryContainer: "#A2EEFA",
+
         error: "#FFB4AB",
         onError: "#690005",
         errorContainer: "#93000A",
-        onErrorContainer: "#FFB4AB",
-        background: "#1A1B1E",
-        onBackground: "#E3E2E6",
-        surface: "#1A1B1E",
-        onSurface: "#E3E2E6",
-        surfaceVariant: "#193a76", //#44474E
-        onSurfaceVariant: "#abadb5",
-        outline: "#8E9099",
-        outlineVariant: "#78797d",
+        onErrorContainer: "#FFDAD5",
+
+        background: "#1C1C1E",
+        onBackground: "#E5E5EA",
+
+        surface: "#1C1C1E",
+        onSurface: "#E5E5EA",
+
+        surfaceVariant: "#2C2C2E",
+        onSurfaceVariant: "#9A9A9C",
+
+        outline: "#8E8E93",
+        outlineVariant: "#5E5E60",
         shadow: "#000000",
-        scrim: "#000000",
-        inverseSurface: "#E3E2E6",
-        inverseOnSurface: "#2F3033",
-        inversePrimary: "#2A5EA7",
-        line: "#ffffff",
+
+        line: "#FFFFFF",
+
         elevation: {
             level0: "transparent",
-            level1: "#212429",
-            level2: "#262930",
-            level3: "#2A2E37",
-            level4: "#2B3039",
-            level5: "#2E333E",
+            level1: "#242426",
+            level2: "#28282A",
+            level3: "#2E2E30",
+            level4: "#313133",
+            level5: "#353537",
         },
-        surfaceDisabled: "rgba(227, 226, 230, 0.12)",
-        onSurfaceDisabled: "rgba(227, 226, 230, 0.38)",
-        backdrop: "rgba(45, 48, 56, 0.4)",
+
         text: {
-            primary: "#E3E2E6",
-            error: "#FFB4AB",
-            success: "#177400",
+            primary: "#E5E5EA",
+            error: "#FF453A",
+            success: "#30D158",
         },
+
         vehicleColors: [
-            "#FF0000", // Rojo
-            "#FFA500", // Naranja
-            "#FFFF00", // Amarillo
-            "#008000", // Verde
-            "#0000FF", // Azul
-            "#4B0082", // Índigo
-            "#800080", // Púrpura
-            "#A52A2A", // Marrón
-            "#000000", // Negro
-            "#FFFFFF", // Blanco
-            "#808080", // Gris medio
-            "#C0C0C0", // Gris claro
-            "#696969", // Gris oscuro
-            "#00CED1", // Turquesa fuerte
-            "#DC143C", // Carmesí
-            "#228B22", // Verde bosque
-            "#1E90FF", // Azul dodger
-            "#B22222", // Rojo fuego
-        ]
-
+            "#FF453A", "#FF9F0A", "#FFD60A", "#30D158", "#0A84FF", "#5E5CE6",
+            "#BF5AF2", "#A2845E", "#000000", "#FFFFFF", "#8E8E93", "#C7C7CC",
+            "#636366", "#64D2FF", "#FF375F", "#30D158", "#64A8FF", "#FF453A",
+        ],
     },
-
-
-};
+} as const;

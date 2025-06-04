@@ -1,14 +1,13 @@
 {
   "expo": {
-    "name": "ups-parking",
-    "slug": "ups-parking",
-    "displayName": "UPS Parking",
+    "name": "UPS Parking",
+    "slug": "UPS_Parking",
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "icon": "./assets/images/icon-2.png",
+    "icon": "./assets/images/icon.png",
     "splash": {
       "image": "./assets/images/splash-2.png",
       "resizeMode": "contain",
@@ -16,7 +15,6 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true,
       "supportsTablet": true,
       "infoPlist": {
         "NSSpeechRecognitionUsageDescription": "Allow $(PRODUCT_NAME) to use speech recognition.",
@@ -26,10 +24,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon-2.png",
-        "backgroundColor": "#ffffff",
-        "permissions": [
-          "android.permission.RECORD_AUDIO"
-        ]
+        "backgroundColor": "#FFFFFF"
       },
       "permissions": [
         "android.permission.RECORD_AUDIO"

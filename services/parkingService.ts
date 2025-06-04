@@ -1,5 +1,5 @@
 import axios, {isAxiosError} from "axios";
-import {DataResponseSchema, MapSchema, ParkingsSpacesSchema, StripsSchema, ZonesSchema} from "@/types";
+import {DataResponseSchema, MapSchema, ParkingsSpacesSchema, StripsSchema, Zones, ZonesSchema} from "@/types";
 
 const API_URL = String(process.env.EXPO_PUBLIC_API_URL);
 export const getParkingAvailable = async (text: string) => {
@@ -17,19 +17,30 @@ export const getParkingAvailable = async (text: string) => {
     return null;
 }
 
-export const getAvailableZones = async () => {
+export const getAvailableZones = async (): Promise<Zones> => {
+    let data: unknown;
     try {
-        const {data} = await axios.get(`${API_URL}/parkings/zones`);
-        const response = ZonesSchema.safeParse(data);
-        if (response.success) {
-            return response.data;
-        }
+        const resp = await axios.get(`${API_URL}/parkings/zones`);
+        data = resp.data;
+        console.log(data)
     } catch (error) {
-        if (isAxiosError(error) && error.response) {
-            throw new Error(error.response?.data.error)
+        console.error("Error fetching zones:", error);
+        if (axios.isAxiosError(error)) {
+            console.error("Axios error:", error.response?.data);
         }
+
+        if (isAxiosError(error) && error.response) {
+            throw new Error(error.response.data.error);
+        }
+        throw error;
     }
-}
+    const parsed = ZonesSchema.safeParse(data);
+    if (!parsed.success) {
+        throw new Error("Invalid API response for zones");
+    }
+    return parsed.data;
+};
+
 
 export const getAvailableMap = async (zoneId : string | string[], stripId: string) => {
     try {

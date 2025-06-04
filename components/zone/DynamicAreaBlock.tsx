@@ -16,6 +16,8 @@ interface ParkingSpace {
     position_x: number;
     position_y: number;
     orientation: string;
+    rotation: number | null;
+    coordinates: string | null;
 }
 
 interface DynamicAreaBlockProps {
@@ -89,11 +91,20 @@ const DynamicAreaBlock = ({
         </svg>
     `;
 
-    const getRotation = (orientation: string, x: number, width: number): number => {
+    const getRotation = (orientation: string, x: number, width: number, rotation: number | null): number => {
+        if (orientation === "custom") return rotation ?? 0;
         if (orientation === "vertical") return 90;
-        if (x > width / 2) return 180;
+        if (orientation === "horizontal") {
+            if (x > width / 2) return 180;
+        }
         return 0;
     };
+
+    const getRotationSvg = (orientation: string, rotation: number | null): number => {
+        if (orientation === "vertical") return 270;
+        if (orientation === "custom") return rotation ?? 0;
+        return 0;
+    }
 
     const getAdjustedPosition = (type: string, status: string, position: number, offset: number): number => {
         // Make the operator precedence explicit with parentheses
@@ -117,7 +128,7 @@ const DynamicAreaBlock = ({
                 </G>
 
                 <G pointerEvents="box-none">
-                    {parkingSpacesData?.map(({id, type, status, position_x, position_y, orientation}) => {
+                    {parkingSpacesData?.map(({id, type, status, position_x, position_y, orientation, rotation}) => {
 
                         return (
                             <ParkingIcon
@@ -129,13 +140,22 @@ const DynamicAreaBlock = ({
                                 viewBox={viewBox}
                                 width={width}
                                 height={height}
-                                rotate={getRotation(orientation, position_x, width)}
+                                rotate={getRotation(orientation, position_x, width, rotation)}
                             />
                         );
                     })}
                 </G>
                 <G pointerEvents="box-none">
-                    {parkingSpacesData?.map(({id, identifier, type, status, position_x, position_y, orientation}) => {
+                    {parkingSpacesData?.map(({
+                                                 id,
+                                                 identifier,
+                                                 type,
+                                                 status,
+                                                 position_x,
+                                                 position_y,
+                                                 orientation,
+                                                 rotation
+                                             }) => {
                         // Skip rendering text for special types or occupied spaces
                         if (shouldSkipTextRendering(type, status)) return null;
 
@@ -148,8 +168,9 @@ const DynamicAreaBlock = ({
                                 freeSpace
                                 withBackground
                                 fontWeight={"bold"}
-                                rotate={orientation === "vertical" ? 270 : 0}
-                                onPress={() => {/* Handle spot press event */}}
+                                rotate={getRotationSvg(orientation, rotation)}
+                                onPress={() => {/* Handle spot press event */
+                                }}
                             >
                                 {identifier}
                             </SvgAnimatedThemedText>

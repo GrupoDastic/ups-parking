@@ -1,194 +1,388 @@
-import React from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {useRouter} from 'expo-router';
-import {LinearGradient} from "expo-linear-gradient";
+/**
+ * PrincipalScreen.tsx
+ * ------------------------------------------------------------------
+ *  • Toast "En construcción" en cada botón
+ *  • Resto de la UI unchanged
+ */
+
+import React, { memo, useMemo, useState } from "react";
+import {
+    View,
+    Platform,
+    RefreshControl,
+    TouchableOpacity,
+    FlatList,
+    FlatListProps,
+    StyleSheet,
+    TextInput,
+} from "react-native";
+import Toast from "react-native-toast-message";
+import { StatusBar } from "expo-status-bar";
+import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";
+import { Image } from "expo-image";
+import Animated, {
+    FadeIn,
+    FadeInDown,
+    useAnimatedStyle,
+    withTiming,
+    useSharedValue,
+    useAnimatedProps,
+    useAnimatedScrollHandler,
+    interpolate,
+} from "react-native-reanimated";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import * as Haptics from "expo-haptics";
+import { Ionicons } from "@expo/vector-icons";
+
 import ZoneCard from "@/components/ui/main/ZoneCard";
+import ZoneCardSkeleton from "@/components/ui/skeleton/ZoneCardSkeleton";
 import SpeechRecognition from "@/components/SpeechRecognition";
-import {Image} from "expo-image";
 import ThemedText from "@/components/shared/ThemedText";
-import {StatusBar} from "expo-status-bar";
-import {Colors} from "@/constants/Colors";
-import CircleDecoration from "@/components/ui/decoration/CircleDecoration";
-import {useQuery, useQueryClient} from "@tanstack/react-query";
-import {getAvailableZones} from "@/services/parkingService";
-import {Zones} from "@/types";
-import Spinner from "@/components/ui/spinner/Spinner";
 import ThemedPressable from "@/components/shared/ThemedPressable";
-import {useThemeColor} from "@/hooks/useThemeColor";
-import {RefreshControl} from 'react-native-gesture-handler';
+import CircleDecoration from "@/components/ui/decoration/CircleDecoration";
 
+import { Colors } from "@/constants/Colors";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { getAvailableZones } from "@/services/parkingService";
+import { Zones } from "@/types";
 
-const PrincipalScreen = () => {
+const ZONE_PRIORITY = ["B", "D", "C", "H", "E", "G"] as const;
+const CARD_WIDTH = 160;
+const CARD_SPACING = 8;
+const CARD_HEIGHT = 130;
+
+const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
+
+/* Tight section header */
+const SectionHeader: React.FC<{ title: string }> = ({ title }) => (
+    <View style={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 4 }}>
+        <ThemedText type="subtitle1" className="text-white">
+            {title}
+        </ThemedText>
+    </View>
+);
+
+const PrincipalScreen: React.FC = () => {
     const router = useRouter();
     const queryClient = useQueryClient();
+    const [search, setSearch] = useState("");
 
-    const backgroundColor = useThemeColor({}, 'background');
-    const primary = useThemeColor({}, "primary");
-    const primaryColor = Colors.light.primary;
-    const secondaryColor = Colors.light.secondary;
+    /* Helper toast */
+    const showUnderConstructionToast = () => {
+        Toast.show({
+            type: "info",          // info | success | error
+            position: "bottom",
+            text1: "🚧 En construcción",
+            text2: "Próximamente.",
+            visibilityTime: 2000,
+            autoHide: true,
+            bottomOffset: 60,
+            props: {},              // puedes pasar props custom si configuras tu propio layout
+        });
+    };
 
-    const zonesAvailable = useQuery({
-        queryKey: ['zones'],
+    /* Theme colors */
+    const gradientStart = Colors.light.primary;
+    const gradientEnd = "#7063FF";
+    const primaryContainer = useThemeColor({}, "primaryContainer");
+    const errorContainer = useThemeColor({}, "errorContainer");
+
+    /* Fetch zones */
+    const { data: zones, isLoading, isError, refetch } = useQuery<Zones, Error>({
+        queryKey: ["zones"],
         queryFn: getAvailableZones,
-        retry: true,
-        retryDelay: 5000,
-        staleTime: 3000,
         refetchInterval: 5000,
-        refetchOnWindowFocus: true,
-        refetchOnReconnect: true,
-        refetchIntervalInBackground: true,
-
     });
 
-    if (zonesAvailable.isError) {
-        queryClient.invalidateQueries({
-            queryKey: ['zones'],
-        })
-    }
+    /* Filter + sort */
+    const filteredZones = useMemo(() => {
+        if (!zones?.zones) return [];
+        return zones.zones
+            .filter(
+                (z) =>
+                    z.zone_name.toLowerCase().includes(search.toLowerCase()) ||
+                    z.zone_identifier.toLowerCase().includes(search.toLowerCase())
+            )
+            .sort(
+                (a, b) =>
+                    ZONE_PRIORITY.indexOf(a.zone_identifier) -
+                    ZONE_PRIORITY.indexOf(b.zone_identifier)
+            );
+    }, [search, zones?.zones]);
 
-    const zones: Zones | undefined = zonesAvailable.data;
+    const totalFree = useMemo(
+        () =>
+            filteredZones.reduce(
+                (acc, { available_spaces }) => acc + Number(available_spaces),
+                0
+            ),
+        [filteredZones]
+    );
 
-    const handleRetry = () => {
-        queryClient.invalidateQueries({
-            queryKey: ['zones'],
-        })
-        zonesAvailable.refetch().then()
-    }
-    const priorityOrder = ["B", "D", "C", "H", "E", "G"];
+    /* Hero animation */
+    const heroAnim = useAnimatedStyle(() => ({
+        opacity: withTiming(isLoading ? 0 : 1, { duration: 550 }),
+        transform: [{ translateY: withTiming(isLoading ? 60 : 0, { duration: 550 }) }],
+    }));
 
-    const sortedZones = zones?.zones.sort((a, b) => {
-        return priorityOrder.indexOf(a.zone_identifier) - priorityOrder.indexOf(b.zone_identifier);
+    /* Parallax blur */
+    const scrollX = useSharedValue(0);
+    const blurProps = useAnimatedProps(() => ({
+        intensity: interpolate(
+            scrollX.value,
+            [0, CARD_WIDTH * Math.max(filteredZones.length - 1, 1)],
+            [50, 80],
+            "clamp"
+        ),
+    }));
+    const scrollHandler = useAnimatedScrollHandler({
+        onScroll: (e) => void (scrollX.value = e.contentOffset.x),
     });
 
+    /* ZoneCard renderer */
+    const renderItem = ({
+                            item,
+                            index,
+                        }: {
+        item: Zones["zones"][number];
+        index: number;
+    }) => (
+        <Animated.View entering={FadeInDown.delay(index * 50)}>
+            <View style={{ marginRight: CARD_SPACING }}>
+                <TouchableOpacity
+                    activeOpacity={0.85}
+                    disabled={item.available_spaces === "0"}
+                    onPress={() => router.push({
+                            pathname: "/zones/[id]",
+                            params: {
+                                id: item.zone_id,
+                                name: item.zone_name,
+                                identifier: item.zone_identifier,
+                            }
+                        })
+                    }
+                >
+                    <ZoneCard
+                        zoneIdentifier={item.zone_identifier}
+                        zoneName={item.zone_name}
+                        availableSpaces={item.available_spaces}
+                        style={{ width: CARD_WIDTH, paddingHorizontal: 20 }}
+                    />
+                </TouchableOpacity>
+            </View>
+        </Animated.View>
+    );
+
+    const SkeletonRow = () => (
+        <View style={{ flexDirection: "row", paddingHorizontal: 16, marginTop: 8 }}>
+            <ZoneCardSkeleton width={CARD_WIDTH} className="mr-4" />
+            <ZoneCardSkeleton width={CARD_WIDTH} className="mr-4" />
+            <ZoneCardSkeleton width={CARD_WIDTH} />
+        </View>
+    );
 
     return (
         <>
-            <ScrollView
+            <StatusBar translucent backgroundColor="transparent" style="auto" />
+
+            <LinearGradient colors={[gradientStart, gradientEnd]} style={StyleSheet.absoluteFill} />
+            <CircleDecoration style={{ top: 420, right: -120 }} />
+            <CircleDecoration style={{ top: 100, left: -110 }} />
+
+            <Animated.ScrollView
+                style={{ flex: 1, paddingBottom: 48 }}
                 refreshControl={
-                    <RefreshControl
-                        refreshing={zonesAvailable.isLoading}
-                        onRefresh={() => zonesAvailable.refetch()}
-                    />
+                    <RefreshControl refreshing={isLoading} onRefresh={refetch} tintColor="#FFF" />
                 }
-                contentContainerStyle={{flexGrow: 1}}>
-
-                <StatusBar translucent backgroundColor={primaryColor} style="light"/>
-                <LinearGradient
-                    colors={[primaryColor, secondaryColor]}
-                    className="flex-1 items-center justify-center relative"
-                >
-                    <View className="absolute inset-0 justify-center items-center">
-                        <CircleDecoration
-                            style={{top: 350, right: -100}}
-                        />
-                        <CircleDecoration
-                            style={{top: 580, left: -50}}
-                        />
-                        <CircleDecoration
-                            style={{top: 200, left: -150}}
-                        />
-                    </View>
-
-                    <View className={"items-center justify-center mt-6"}>
-                        <Image source={require("@/assets/images/ups-logo.png")} style={styles.logoImage}/>
-                    </View>
-
-                    {
-                        zones?.zones.length === 0 && (
-                            <ThemedText type="h3" className="mt-6">No hay zonas disponibles</ThemedText>
-                        )
-                    }
-
-                    {
-                        zonesAvailable.isLoading ? (
-                                <Spinner text="Cargando..."/>
-                            ) :
-                            zonesAvailable.isError ? (
-                                <>
-                                    <ThemedText type="error" className="mt-6">Error al cargar las zonas</ThemedText>
-                                    <ThemedPressable icon={"analytics"} title={"Reintentar"} onPress={handleRetry}
-                                    />
-                                </>
-                            ) : (
-                                <ScrollView className="w-full flex-1 " showsHorizontalScrollIndicator={false}
-                                            horizontal>
-
-                                    <View className="flex-row w-full justify-between mt-8 px-4 gap-x-2">
-
-                                        {/*
-                                        params: {
-                                                        id: zone_id,
-                                                        name: zone_name,
-                                                        identifier: zone_identifier,
-                                                    }
-                                        */}
-
-                                        {sortedZones?.map(({zone_id, zone_identifier, zone_name, available_spaces}) => (
-                                            <TouchableOpacity
-                                                key={zone_id}
-                                                onPress={() => router.push({
-                                                    pathname: "/zones/[id]",
-                                                    params: {
-                                                        id: zone_id,
-                                                        name: zone_name,
-                                                        identifier: zone_identifier,
-                                                    }
-                                                })}
-                                                disabled={available_spaces === "0"}
-                                                className={available_spaces === "0" ? "opacity-50" : ""}
-
-                                            >
-                                                <ZoneCard zoneIdentifier={zone_identifier} zoneName={zone_name} availableSpaces={available_spaces}/>
-                                            </TouchableOpacity>
-                                        ))}
-                                    </View>
-                                </ScrollView>
-                            )
-                    }
-
-
+            >
+                {/* LOGO */}
+                <View style={{ alignItems: "center", marginTop: 6 }}>
                     <Image
-                        style={styles.carImage}
-                        source={require('@/assets/images/icono.png')}
+                        source={require("@/assets/images/ups-logo.png")}
+                        style={{ width: 240, height: 100 }}
+                        contentFit="contain"
                     />
+                </View>
 
-                    <View className="w-4/5 rounded-xl p-4 mb-2 mx-4 shadow-lg items-center"
-                          style={{backgroundColor}}
+                {/* HERO */}
+                <Animated.View entering={FadeIn.duration(550)} style={heroAnim}>
+                    <View
+                        style={{
+                            width: "92%",
+                            alignSelf: "center",
+                            marginTop: 16,
+                            borderRadius: 24,
+                            overflow: "hidden",
+                        }}
                     >
-                        <ThemedText type="h2">UPS Parking</ThemedText>
-                        <ThemedText type="subtitle2" className="mt-2"
-                                    style={{
-                                        color: primary
-                                    }}
+                        <AnimatedBlurView
+                            animatedProps={blurProps}
+                            tint={Platform.OS === "ios" ? "light" : "default"}
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                padding: 16,
+                                borderWidth: 1,
+                                borderColor: "rgba(255,255,255,0.15)",
+                            }}
                         >
-                            ¡Parquea tu auto de manera fácil!
+                            <Image
+                                source={require("@/assets/images/icon.png")}
+                                style={{ width: 120, height: 150, marginRight: 5 }}
+                                contentFit="contain"
+                            />
+                            <View style={{ flex: 1 }}>
+                                <ThemedText type="h2" className="text-white text-center">
+                                    Bienvenido a UPS Parking
+                                </ThemedText>
+                                <ThemedText type="body2" className="text-white/90 text-center mt-1">
+                                    Encuentra y reserva tu lugar en segundos.
+                                </ThemedText>
+                                <TouchableOpacity onPress={showUnderConstructionToast}>
+                                    <ThemedPressable icon="navigate" title="Explorar zonas" className="mt-2"/>
+                                </TouchableOpacity>
+                            </View>
+                        </AnimatedBlurView>
+                    </View>
+                </Animated.View>
+
+                {/* SEARCH BAR */}
+                <View style={{ paddingHorizontal: 16, marginTop: 16 }}>
+                    <View style={{ overflow: "hidden", borderRadius: 999 }}>
+                        <BlurView
+                            intensity={30}
+                            tint="default"
+                            style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                paddingHorizontal: 12,
+                                paddingVertical: 8,
+                                backgroundColor: "rgba(255,255,255,0.05)",
+                            }}
+                        >
+                            <Ionicons name="search" size={20} color="white" />
+                            <TextInput
+                                style={{ flex: 1, marginLeft: 8, color: "white" }}
+                                placeholder="Buscar zona..."
+                                placeholderTextColor="rgba(255,255,255,0.7)"
+                                value={search}
+                                onChangeText={setSearch}
+                            />
+                        </BlurView>
+                    </View>
+                </View>
+
+                {/* ZONAS DISPONIBLES */}
+                <SectionHeader title="Zonas disponibles" />
+
+                {isLoading ? (
+                    <SkeletonRow />
+                ) : isError ? (
+                    <View style={{ alignItems: "center", marginTop: 8 }}>
+                        <ThemedText type="error" className="mb-1 text-white">
+                            Error al cargar zonas
                         </ThemedText>
+                        <TouchableOpacity onPress={showUnderConstructionToast}>
+                            <ThemedPressable icon="refresh" title="Reintentar" />
+                        </TouchableOpacity>
+                    </View>
+                ) : (
+                    <Animated.FlatList
+                        data={filteredZones}
+                        keyExtractor={(item) => item.zone_id.toString()}
+                        renderItem={renderItem}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        snapToInterval={CARD_WIDTH + CARD_SPACING}
+                        decelerationRate="fast"
+                        onScroll={scrollHandler}
+                        scrollEventThrottle={16}
+                        onMomentumScrollEnd={() => Haptics.selectionAsync()}
+                        contentContainerStyle={{ paddingHorizontal: 16, alignItems: "center" }}
+                    />
+                )}
+
+                {/* TOTAL FREE CARD + VOICE BUTTON */}
+                <Animated.View entering={FadeInDown.delay(200)} style={{ alignItems: "center", marginTop: 16 }}>
+                    <View style={{ width: "90%", borderRadius: 16, overflow: "hidden" }}>
+                        <BlurView
+                            intensity={40}
+                            style={{
+                                padding: 16,
+                                borderWidth: 1,
+                                borderColor: "rgba(255,255,255,0.15)",
+                            }}
+                        >
+                            <ThemedText type="h4" className="text-white text-center mb-1">
+                                Espacios libres totales
+                            </ThemedText>
+                            <ThemedText type="h1" className="text-white text-center">
+                                {isLoading ? "—" : totalFree}
+                            </ThemedText>
+                        </BlurView>
                     </View>
 
-                    {
-                        zonesAvailable.isLoading || zonesAvailable.isError ? (
-                            <Spinner text="Cargando..."/>
-                        ) : (
-                            <SpeechRecognition className="mt-2 w-1/2"/>
-                        )
-                    }
-                </LinearGradient>
-            </ScrollView>
+                    <View style={{ marginTop: 12, alignItems: "center" }}>
+                        <ThemedText type="caption" className="text-white/75 mb-1">
+                            Toca el botón para parquear con voz
+                        </ThemedText>
+                        <View style={{ height: 50, overflow: "hidden" }}>
+                            <SpeechRecognition className="w-full h-full" />
+                        </View>
+                    </View>
+                </Animated.View>
+
+                {/* QUICK ACTIONS */}
+                <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 16, paddingHorizontal: 16 }}>
+                    <View style={{ flex: 1, marginRight: 8, overflow: "hidden", borderRadius: 12 }}>
+                        <BlurView
+                            intensity={30}
+                            tint={Platform.OS === "ios" ? "light" : "default"}
+                            style={{
+                                padding: 12,
+                                alignItems: "center",
+                                backgroundColor: "rgba(255,255,255,0.05)",
+                            }}
+                        >
+                            <TouchableOpacity onPress={showUnderConstructionToast}>
+                                <Ionicons name="map-outline" size={24} color="white" />
+                                <ThemedText type="button" className="text-white mt-1">
+                                    Ver mapa general
+                                </ThemedText>
+                            </TouchableOpacity>
+                        </BlurView>
+                    </View>
+                    <View style={{ flex: 1, marginLeft: 8, overflow: "hidden", borderRadius: 12 }}>
+                        <BlurView
+                            intensity={30}
+                            tint={Platform.OS === "ios" ? "light" : "default"}
+                            style={{
+                                padding: 12,
+                                alignItems: "center",
+                                backgroundColor: "rgba(255,255,255,0.05)",
+                            }}
+                        >
+                            <TouchableOpacity onPress={showUnderConstructionToast}>
+                                <Ionicons name="calendar-outline" size={24} color="white" />
+                                <ThemedText type="button" className="text-white mt-1">
+                                    Mis reservas
+                                </ThemedText>
+                            </TouchableOpacity>
+                        </BlurView>
+                    </View>
+                </View>
+
+                {/* FOOTER */}
+                <View style={{ alignItems: "center", marginVertical: 24 }}>
+                    <ThemedText type="caption" className="text-white/70">
+                        © ImEcuadorian & UPS
+                    </ThemedText>
+                </View>
+            </Animated.ScrollView>
         </>
     );
 };
 
-const styles = StyleSheet.create({
-    carImage: {
-        width: 359,
-        height: 330,
-        zIndex: 2,
-    },
-    logoImage: {
-        width: 225,
-        height: 65,
-        zIndex: 2,
-    },
-});
-
-export default PrincipalScreen;
+export default memo(PrincipalScreen);

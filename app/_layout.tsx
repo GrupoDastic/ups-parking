@@ -8,13 +8,12 @@ import {useThemeColor} from "@/hooks/useThemeColor";
 import {useColorScheme} from "@/hooks/useColorScheme";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 import {DarkTheme, DefaultTheme, ThemeProvider} from "@react-navigation/native";
-import ThemedView from "@/components/shared/ThemedView";
-import SpeechRecognition from "@/components/SpeechRecognition";
 import {StatusBar} from "expo-status-bar";
 import {Navigator, Slot} from "expo-router";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {View} from "react-native";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
+import Toast from "react-native-root-toast";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -63,6 +62,7 @@ const RootLayout = () => {
                         <Navigator>
                             <Slot/>
                         </Navigator>
+                        <Toast/>
                     </View>
                 </ThemeProvider>
             </GestureHandlerRootView>

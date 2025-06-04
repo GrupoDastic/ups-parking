@@ -6,9 +6,12 @@ export const DataResponseSchema = z.object({
 
 export type DataResponse = z.infer<typeof DataResponseSchema>;
 
+export const ZONE_PRIORITY = ["B", "D", "C", "H", "E", "G"] as const;
+export type ZoneIdentifier = typeof ZONE_PRIORITY[number];
+
 export const ZoneSchema = z.object({
     zone_id: z.string(),
-    zone_identifier: z.string(),
+    zone_identifier: z.enum(ZONE_PRIORITY),
     zone_name: z.string(),
     available_spaces: z.string(),
 });
@@ -35,6 +38,9 @@ export const StripsSchema = z.object({
     )
 });
 
+export type Strip = z.infer<typeof StripSchema>;
+export type Strips = z.infer<typeof StripsSchema>;
+
 export const ParkingSpaceSchema = z.object({
     id: z.string(),
     identifier: z.string(),
@@ -45,6 +51,8 @@ export const ParkingSpaceSchema = z.object({
     position_x: z.number(),
     position_y: z.number(),
     orientation: z.string(),
+    rotation: z.number().nullable(),
+    coordinates: z.string().nullable(),
 });
 
 export const ParkingsSpacesSchema = z.object({

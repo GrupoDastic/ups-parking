@@ -116,7 +116,7 @@ const ParkingZone = ({id, name, identifier}: ParkingZoneProps) => {
                             style={{backgroundColor: primaryContainer}}
                         >
                             <View className="p-2 rounded-full bg-white/30 mb-2">
-                                <Ionicons name="location-outline" size={28} color={primary}/>
+                                <Ionicons name="location-outline" size={28} color={textPrimary}/>
                             </View>
 
                             <ThemedText
@@ -199,13 +199,12 @@ const ParkingZone = ({id, name, identifier}: ParkingZoneProps) => {
                             style={{ backgroundColor: primaryContainer }}
                         >
                             <View className="p-2 rounded-full bg-white/30 mb-2">
-                                <Ionicons name="navigate-circle-outline" size={28} color={primary} />
+                                <Ionicons name="navigate-circle-outline" size={28} color={textPrimary} />
                             </View>
 
                             <ThemedText
                                 type="h4"
                                 className="font-extrabold tracking-wide text-center"
-                                style={{ color: primary }}
                             >
                                 Plano Interactivo
                             </ThemedText>
@@ -244,9 +243,6 @@ const ParkingZone = ({id, name, identifier}: ParkingZoneProps) => {
                 </View>
 
 
-
-
-
                 <Modal visible={modalVisible} transparent animationType="fade">
                     <GestureHandlerRootView className="flex-1">
                         <View className="flex-1 justify-center items-center">
@@ -269,7 +265,7 @@ const ParkingZone = ({id, name, identifier}: ParkingZoneProps) => {
 
                                 <ThemedPressable
                                     title="Cerrar"
-                                    className="rounded-lg w-3/4 mt-4 self-center mb-2 mt-2"
+                                    className="rounded-lg w-3/4 mt-4 self-center mb-2"
                                     onPress={() => {
                                         scaleImage.value = 1;
                                         translateX.value = 0;
