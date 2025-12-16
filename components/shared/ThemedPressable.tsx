@@ -1,9 +1,8 @@
-import {TouchableOpacity, TouchableOpacityProps, View} from "react-native";
-import {Ionicons} from "@expo/vector-icons";
+import { Pressable, PressableProps, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import ThemedText from "@/components/shared/ThemedText";
-import {useThemeColor} from "@/hooks/useThemeColor";
 
-export interface ThemedPressableProps extends TouchableOpacityProps {
+export interface ThemedPressableProps extends PressableProps {
     title: string;
     className?: string;
     icon?: keyof typeof Ionicons.glyphMap;
@@ -11,32 +10,41 @@ export interface ThemedPressableProps extends TouchableOpacityProps {
     isActive?: boolean;
 }
 
-const
-    ThemedPressable = ({title, className, style, icon, size = 24, isActive = false, ...rest}: ThemedPressableProps) => {
-    const secondaryColor = useThemeColor({}, 'secondary');
-    const surfaceVariant = useThemeColor({}, 'surfaceVariant');
-
+const ThemedPressable = ({
+                             title,
+                             className = "",
+                             icon,
+                             size = 20,
+                             isActive = false,
+                             ...rest
+                         }: ThemedPressableProps) => {
     return (
-        <TouchableOpacity
-            activeOpacity={0.7} // 🔥 Ajusta la opacidad al presionar
-            className={[
-                isActive ? 'bg-light-surfaceVariant dark:bg-dark-surfaceVariant' : 'bg-light-onPrimaryContainer',
-                'p-2.5',
-                'rounded-lg',
-                'flex-row',
-                'items-center',
-                'justify-center',
-                className,
-            ].join(' ')}
+        <Pressable
+            className={`
+        px-4 py-2.5 rounded-lg
+        flex-row items-center justify-center gap-2
+        bg-primary-container
+        active:opacity-80 active:scale-[0.95]
+        ${isActive ? "bg-primary/20" : ""}
+        ${className}
+      `}
             {...rest}
         >
-            <View className='flex-row items-center justify-center space-x-2'>
-                {icon && <Ionicons name={icon} size={size} color={secondaryColor} className="mr-3"/>}
-                <ThemedText style={{
-                    color: secondaryColor
-                }} type={'button'}>{title}</ThemedText>
-            </View>
-        </TouchableOpacity>
+            {icon && (
+                <Ionicons
+                    name={icon}
+                    size={size}
+                    className="text-primary"
+                />
+            )}
+
+            <ThemedText
+                type="button"
+                className="text-primary"
+            >
+                {title}
+            </ThemedText>
+        </Pressable>
     );
 };
 

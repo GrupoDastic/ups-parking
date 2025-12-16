@@ -1,74 +1,43 @@
-import {useEffect} from 'react';
-
-import * as SplashScreen from 'expo-splash-screen';
-
+import {useEffect} from "react";
+import * as SplashScreen from "expo-splash-screen";
 import "../global.css";
 import {useFonts} from "expo-font";
-import {useThemeColor} from "@/hooks/useThemeColor";
-import {useColorScheme} from "@/hooks/useColorScheme";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
-import {DarkTheme, DefaultTheme, ThemeProvider} from "@react-navigation/native";
 import {StatusBar} from "expo-status-bar";
-import {Navigator, Slot} from "expo-router";
+import {Stack} from "expo-router";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import {View} from "react-native";
-import {useSafeAreaInsets} from "react-native-safe-area-context";
-import Toast from "react-native-root-toast";
+import {useColorScheme} from "react-native";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "@/components/ui/toast";
+import {SafeAreaProvider} from "react-native-safe-area-context";
 
 SplashScreen.preventAutoHideAsync();
-
 const queryClient = new QueryClient();
 
-const RootLayout = () => {
-
-    const backgroundColor = useThemeColor({}, 'background');
-    const colorScheme = useColorScheme();
-
-    const safeAreaInsets = useSafeAreaInsets();
+export default function RootLayout() {
+    const scheme = useColorScheme();
 
     const [loaded] = useFonts({
-        'Poppins-Black': require('../assets/fonts/Poppins-Black.ttf'),
-        'Poppins-Bold': require('../assets/fonts/Poppins-Bold.ttf'),
-        'Poppins-Extra-Bold': require('../assets/fonts/Poppins-Bold.ttf'),
-        'Poppins-Light': require('../assets/fonts/Poppins-Light.ttf'),
-        'Poppins-Medium': require('../assets/fonts/Poppins-Medium.ttf'),
-        'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
-        'Poppins-SemiBold': require('../assets/fonts/Poppins-SemiBold.ttf'),
-        'Poppins-Thin': require('../assets/fonts/Poppins-Thin.ttf'),
-    })
+        "Poppins-Regular": require("../assets/fonts/Poppins-Regular.ttf"),
+        "Poppins-Medium": require("../assets/fonts/Poppins-Medium.ttf"),
+        "Poppins-SemiBold": require("../assets/fonts/Poppins-SemiBold.ttf"),
+    });
 
     useEffect(() => {
-        if (loaded) {
-            SplashScreen.hideAsync();
-        }
+        if (loaded) SplashScreen.hideAsync();
     }, [loaded]);
 
-    if (!loaded) {
-        return null;
-    }
+    if (!loaded) return null;
 
     return (
         <QueryClientProvider client={queryClient}>
-            <GestureHandlerRootView style={{flex: 1, backgroundColor}}>
-                <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                    <View style={{
-                        flex: 1, backgroundColor,
-                        marginTop: safeAreaInsets.top,
-                        marginBottom: safeAreaInsets.bottom,
-                        marginLeft: safeAreaInsets.left,
-                        marginRight: safeAreaInsets.right,
-                    }}>
-                        <StatusBar style={"auto"}/>
-                        <Navigator>
-                            <Slot/>
-                        </Navigator>
-                        <Toast/>
-                    </View>
-                </ThemeProvider>
-            </GestureHandlerRootView>
+            <SafeAreaProvider>
+                <GestureHandlerRootView className={scheme === "dark" ? "dark flex-1" : "flex-1"}>
+                    <StatusBar style={scheme === "dark" ? "light" : "dark"}/>
+                    <Stack screenOptions={{headerShown: false}}/>
+                    <Toast config={toastConfig}/>
+                </GestureHandlerRootView>
+            </SafeAreaProvider>
         </QueryClientProvider>
     );
 }
-
-export default RootLayout;
-

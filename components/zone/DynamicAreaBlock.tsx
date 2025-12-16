@@ -1,12 +1,12 @@
 import React from "react";
-import Svg, {G, SvgXml} from "react-native-svg";
-import {View} from "react-native";
+import Svg, { G, SvgXml } from "react-native-svg";
+import { View } from "react-native";
 import CarIcon from "@/components/icon/CarIcon";
 import PregnantIcon from "@/components/icon/PregnantIcon";
 import DisabledIcon from "@/components/icon/DisabledIcon";
 import StripsIcon from "@/components/icon/StripsIcon";
 import SvgAnimatedThemedText from "@/components/shared/SvgAnimatedThemedText";
-import {useThemeColor} from "@/hooks/useThemeColor";
+import { useAppTheme } from "@/hooks/useAppTheme";
 
 interface ParkingSpace {
     id: string;
@@ -28,29 +28,9 @@ interface DynamicAreaBlockProps {
     parkingSpacesData?: ParkingSpace[];
 }
 
-// Subcomponente para renderizar íconos
-const ParkingIcon = ({
-                         type,
-                         status,
-                         x,
-                         y,
-                         viewBox,
-                         width,
-                         height,
-                         rotate,
-                     }: {
-    type: string;
-    status: string;
-    x: number;
-    y: number;
-    viewBox: string;
-    width: number;
-    height: number;
-    rotate?: number;
-}) => {
-    const commonProps = {x, y, viewBox, width, height, rotate};
+const ParkingIcon = ({ type, status, x, y, viewBox, width, height, rotate }: any) => {
+    const commonProps = { x, y, viewBox, width, height, rotate };
 
-    // Use a more declarative approach with a switch statement
     switch (true) {
         case status === "occupied":
             return <CarIcon {...commonProps} />;
@@ -73,11 +53,11 @@ const DynamicAreaBlock = ({
                               parkingSpacesData,
                           }: DynamicAreaBlockProps) => {
 
-    const lineColor = useThemeColor({}, "line");
+    const theme = useAppTheme();
+    const lineColor = theme.border;
 
     let cleanedSvgContent = svgContent
         .replace(/\$\$/g, "")
-        // We're keeping the rect elements with fill attributes as they're needed for the SVG rendering
         .replace(
             /transform="matrix\((-?\d+\.?\d*) 0 0 (-?\d+\.?\d*) (\d+\.?\d*) (\d+\.?\d*)\)"/g,
             (_match, scaleX, scaleY, translateX, translateY) =>
@@ -86,7 +66,7 @@ const DynamicAreaBlock = ({
         .replace(/stroke="#FFE208"/gi, `stroke="${lineColor}"`);
 
     const svgXml = `
-        <svg width="${width}" height="${height}" viewBox="${viewBox}" xmlns="http://www.w3.org/2000/svg">
+        <svg width="${width}" height="${height}" viewBox="${viewBox}">
             ${cleanedSvgContent}
         </svg>
     `;
@@ -94,9 +74,7 @@ const DynamicAreaBlock = ({
     const getRotation = (orientation: string, x: number, width: number, rotation: number | null): number => {
         if (orientation === "custom") return rotation ?? 0;
         if (orientation === "vertical") return 90;
-        if (orientation === "horizontal") {
-            if (x > width / 2) return 180;
-        }
+        if (orientation === "horizontal" && x > width / 2) return 180;
         return 0;
     };
 
@@ -104,75 +82,56 @@ const DynamicAreaBlock = ({
         if (orientation === "vertical") return 270;
         if (orientation === "custom") return rotation ?? 0;
         return 0;
-    }
+    };
 
     const getAdjustedPosition = (type: string, status: string, position: number, offset: number): number => {
-        // Make the operator precedence explicit with parentheses
         if (type === "disabled" || (type === "pregnant" && status === "occupied")) {
             return position + offset;
         }
         return position;
     };
 
-    const shouldSkipTextRendering = (type: string, status: string): boolean => {
-        // Skip text rendering for special types or occupied spaces
-        return ["strips", "pregnant", "disabled"].includes(type) || status === "occupied";
-    };
-
+    const shouldSkipTextRendering = (type: string, status: string): boolean =>
+        ["strips", "pregnant", "disabled"].includes(type) || status === "occupied";
 
     return (
         <View className="items-center justify-center mb-6 mt-6">
             <Svg width={width} height={height} viewBox={viewBox}>
                 <G pointerEvents="none">
-                    <SvgXml xml={svgXml} width={width} height={height}/>
+                    <SvgXml xml={svgXml} width={width} height={height} />
                 </G>
 
                 <G pointerEvents="box-none">
-                    {parkingSpacesData?.map(({id, type, status, position_x, position_y, orientation, rotation}) => {
-
-                        return (
-                            <ParkingIcon
-                                key={`icon-${id}`}
-                                type={type}
-                                status={status}
-                                x={getAdjustedPosition(type, status, position_x, 27)}
-                                y={getAdjustedPosition(type, status, position_y, 22)}
-                                viewBox={viewBox}
-                                width={width}
-                                height={height}
-                                rotate={getRotation(orientation, position_x, width, rotation)}
-                            />
-                        );
-                    })}
+                    {parkingSpacesData?.map(p => (
+                        <ParkingIcon
+                            key={`icon-${p.id}`}
+                            {...p}
+                            x={getAdjustedPosition(p.type, p.status, p.position_x, 27)}
+                            y={getAdjustedPosition(p.type, p.status, p.position_y, 22)}
+                            rotate={getRotation(p.orientation, p.position_x, width, p.rotation)}
+                            viewBox={viewBox}
+                            width={width}
+                            height={height}
+                        />
+                    ))}
                 </G>
+
                 <G pointerEvents="box-none">
-                    {parkingSpacesData?.map(({
-                                                 id,
-                                                 identifier,
-                                                 type,
-                                                 status,
-                                                 position_x,
-                                                 position_y,
-                                                 orientation,
-                                                 rotation
-                                             }) => {
-                        // Skip rendering text for special types or occupied spaces
-                        if (shouldSkipTextRendering(type, status)) return null;
+                    {parkingSpacesData?.map(p => {
+                        if (shouldSkipTextRendering(p.type, p.status)) return null;
 
                         return (
                             <SvgAnimatedThemedText
-                                key={`text-${id}`}
-                                x={position_x}
-                                y={position_y}
+                                key={`text-${p.id}`}
+                                x={p.position_x}
+                                y={p.position_y}
                                 fontSize="18"
                                 freeSpace
                                 withBackground
-                                fontWeight={"bold"}
-                                rotate={getRotationSvg(orientation, rotation)}
-                                onPress={() => {/* Handle spot press event */
-                                }}
+                                fontWeight="bold"
+                                rotate={getRotationSvg(p.orientation, p.rotation)}
                             >
-                                {identifier}
+                                {p.identifier}
                             </SvgAnimatedThemedText>
                         );
                     })}

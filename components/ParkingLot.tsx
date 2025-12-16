@@ -1,7 +1,7 @@
 import {ScrollView, View} from "react-native";
 import {useQuery} from "@tanstack/react-query";
 import {getAvailableMap, getAvailableParkingSpaces} from "@/services/parkingService";
-import Spinner from "./ui/spinner/Spinner";
+import Spinner from "@/components/ui/spinner/Spinner";
 import ErrorPage from "@/components/ErrorPage";
 import DynamicAreaBlock from "@/components/zone/DynamicAreaBlock";
 

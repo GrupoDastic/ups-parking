@@ -1,9 +1,8 @@
 import PrincipalScreen from "@/components/PrincipalScreen";
 
-const IndexScreen = () => {
+export default function IndexScreen() {
     return (
         <PrincipalScreen/>
     );
 }
 
-export default IndexScreen;

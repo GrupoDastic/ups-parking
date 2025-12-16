@@ -47,3 +47,6 @@ android/
 .idea/
 
 /original-0e229bbabfc9a583d406b3d4d6807ee6.webp
+
+assets/parking.glb
+assets/*.glb

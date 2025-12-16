@@ -1,6 +1,6 @@
-import Svg, { G, Text as SvgText } from "react-native-svg";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { TextProps } from "react-native";
+import { G, Text as SvgText } from "react-native-svg";
+import { useAppTheme } from "@/hooks/useAppTheme";
+import {TextProps} from "react-native";
 
 export interface SvgThemedTextProps extends TextProps {
     x: number;
@@ -11,25 +11,30 @@ export interface SvgThemedTextProps extends TextProps {
     rotate?: number;
 }
 
-const SvgThemedText = ({ children, x, y, fontSize, textAnchor, rotate = 0, fontWeight,...rest }: SvgThemedTextProps) => {
-    const textColor = useThemeColor({}, "text.primary");
+const SvgThemedText = ({
+                           children,
+                           x,
+                           y,
+                           fontSize,
+                           textAnchor,
+                           rotate = 0,
+                           fontWeight,
+                       }: SvgThemedTextProps) => {
+    const theme = useAppTheme();
 
     return (
-        <Svg width="390" height="580" viewBox="0 0 390 580">
-            <G transform={`rotate(${rotate}, ${x}, ${y})`}>
-                <SvgText
-                    x={x}
-                    y={y}
-                    fill={textColor}
-                    fontWeight={fontWeight}
-                    fontSize={fontSize}
-                    textAnchor={textAnchor}
-                    {...rest}
-                >
-                    {children}
-                </SvgText>
-            </G>
-        </Svg>
+        <G transform={`rotate(${rotate}, ${x}, ${y})`}>
+            <SvgText
+                x={x}
+                y={y}
+                fill={theme.text.primary}
+                fontWeight={fontWeight}
+                fontSize={fontSize}
+                textAnchor={textAnchor}
+            >
+                {children}
+            </SvgText>
+        </G>
     );
 };
 

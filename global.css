@@ -1,3 +1,82 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+@import "nativewind/theme";
+
+@theme {
+    --font-poppins-black: "Poppins-Black", sans-serif;
+    --font-poppins-bold: "Poppins-Bold", sans-serif;
+    --font-poppins-extra-bold: "Poppins-ExtraBold", sans-serif;
+    --font-poppins-light: "Poppins-ExtraLight", sans-serif;
+    --font-poppins-medium: "Poppins-Medium", sans-serif;
+    --font-poppins-regular: "Poppins-Regular", sans-serif;
+    --font-poppins-semi-bold: "Poppins-SemiBold", sans-serif;
+    --font-poppins-thin: "Poppins-Thin", sans-serif;
+    /* Backgrounds */
+    --color-background: rgb(var(--background));
+    --color-surface: rgb(var(--surface));
+
+    /* Foreground / text */
+    --color-foreground: rgb(var(--foreground));
+    --color-on-surface: rgb(var(--on-surface));
+
+    /* Primary colors */
+    --color-primary: rgb(var(--primary));
+    --color-on-primary: rgb(var(--on-primary));
+    --color-primary-container: rgb(var(--primary-container));
+    --color-on-primary-container: rgb(var(--on-primary-container));
+
+    /* Error */
+    --color-error: rgb(var(--error));
+    --color-on-error: rgb(var(--on-error));
+}
+
+/* -----------------------------------------
+   LIGHT THEME (default)
+------------------------------------------ */
+:root {
+    /* Background */
+    --background: 245 247 255; /* Azul muy suave */
+    --surface: 255 255 255; /* Blanco */
+
+    /* Text */
+    --foreground: 20 20 20;
+    --on-surface: 32 32 32;
+
+    /* Primary (Azul UPS) */
+    --primary: 50 85 255; /* Azul #3255FF */
+    --on-primary: 255 255 255;
+
+    /* Primary Container */
+    --primary-container: 227 235 255; /* Azul claro */
+    --on-primary-container: 20 40 120;
+
+    /* Error */
+    --error: 210 30 30;
+    --on-error: 255 255 255;
+}
+
+/* -----------------------------------------
+   DARK THEME (NativeWind toggles .dark)
+------------------------------------------ */
+.dark {
+    /* Background */
+    --background: 15 18 28;
+    --surface: 25 28 40;
+
+    /* Text */
+    --foreground: 230 235 255;
+    --on-surface: 200 205 230;
+
+    /* Primary (más brillante en modo oscuro) */
+    --primary: 120 150 255;
+    --on-primary: 0 0 0;
+
+    /* Primary Container */
+    --primary-container: 60 75 150;
+    --on-primary-container: 220 230 255;
+
+    /* Error */
+    --error: 255 90 90;
+    --on-error: 0 0 0;
+}

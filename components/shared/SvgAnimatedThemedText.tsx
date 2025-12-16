@@ -1,22 +1,16 @@
 import { G, Rect, Text as SvgText } from "react-native-svg";
-import { useThemeColor } from "@/hooks/useThemeColor";
-import { TextProps } from "react-native";
+import { useAppTheme } from "@/hooks/useAppTheme";
 import { useState } from "react";
-import { Colors } from "@/constants/Colors";
 
 export interface SvgThemedTextProps extends TextProps {
     x: number;
     y: number;
     fontSize?: string;
-    textAnchor?: "start" | "middle" | "end";
     rotate?: number;
     freeSpace?: boolean;
     onPress?: () => void;
     withBackground?: boolean;
     fontWeight?: string;
-    width?: number;
-    height?: number;
-    viewBox?: string;
 }
 
 const SvgAnimatedThemedText = ({
@@ -30,18 +24,13 @@ const SvgAnimatedThemedText = ({
                                    withBackground = false,
                                    fontWeight,
                                }: SvgThemedTextProps) => {
-    const textColor = useThemeColor({}, "text.primary");
-    const secondaryColor = useThemeColor({}, "secondary");
-    const backgroundColor = Colors.light.onPrimaryContainer;
-
+    const theme = useAppTheme();
     const [pressed, setPressed] = useState(false);
 
     const handlePress = () => {
         setPressed(true);
         onPress?.();
-        setTimeout(() => {
-            setPressed(false);
-        }, 300);
+        setTimeout(() => setPressed(false), 300);
     };
 
     return (
@@ -53,16 +42,16 @@ const SvgAnimatedThemedText = ({
                     width={70}
                     height={40}
                     rx={6}
-                    fill={pressed ? "#FFC300" : backgroundColor}
+                    fill={pressed ? theme.secondary : theme.surfaceVariant}
                 />
             )}
             <SvgText
                 x={x}
                 y={y + 6}
+                fill={pressed ? theme.text.error : freeSpace ? theme.secondary : theme.text.primary}
                 fontSize={fontSize}
-                textAnchor="middle"
                 fontWeight={fontWeight}
-                fill={pressed ? "#FF5733" : (freeSpace ? secondaryColor : textColor)}
+                textAnchor="middle"
             >
                 {children}
             </SvgText>

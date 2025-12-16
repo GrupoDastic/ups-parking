@@ -1,7 +1,7 @@
 import {z} from 'zod';
 
 export const DataResponseSchema = z.object({
-    text: z.string(),
+    respuesta: z.string(),
 });
 
 export type DataResponse = z.infer<typeof DataResponseSchema>;

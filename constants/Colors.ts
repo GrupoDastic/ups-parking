@@ -119,3 +119,37 @@ export const Colors = {
         ],
     },
 } as const;
+
+export const lightColors = {
+    background: "rgb(245, 247, 255)",
+    surface: "rgb(255, 255, 255)",
+
+    foreground: "rgb(20, 20, 20)",
+    onSurface: "rgb(32, 32, 32)",
+
+    primary: "rgb(50, 85, 255)",
+    onPrimary: "rgb(255, 255, 255)",
+
+    primaryContainer: "rgb(227, 235, 255)",
+    onPrimaryContainer: "rgb(20, 40, 120)",
+
+    error: "rgb(210, 30, 30)",
+    onError: "rgb(255, 255, 255)",
+};
+
+export const darkColors = {
+    background: "rgb(15, 18, 28)",
+    surface: "rgb(25, 28, 40)",
+
+    foreground: "rgb(230, 235, 255)",
+    onSurface: "rgb(200, 205, 230)",
+
+    primary: "rgb(120, 150, 255)",
+    onPrimary: "rgb(0, 0, 0)",
+
+    primaryContainer: "rgb(60, 75, 150)",
+    onPrimaryContainer: "rgb(220, 230, 255)",
+
+    error: "rgb(255, 90, 90)",
+    onError: "rgb(0, 0, 0)",
+};

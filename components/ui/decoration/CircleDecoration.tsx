@@ -1,14 +1,9 @@
 import React from "react";
 import { View, ViewProps } from "react-native";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { useAppTheme } from "@/hooks/useAppTheme";
 
-/** CircleDecoration
- *  Re‑usable blurred / translucent circle for background flair.
- */
 export interface CircleDecorationProps extends ViewProps {
-    /** Pixel diameter (default 192 ≈ 48×4). */
     size?: number;
-    /** Background opacity (0 – 1). */
     opacity?: number;
 }
 
@@ -18,18 +13,17 @@ const CircleDecoration: React.FC<CircleDecorationProps> = ({
                                                                style,
                                                                ...rest
                                                            }) => {
-    const surfaceVariant = useThemeColor({}, "surfaceVariant");
+    const theme = useAppTheme();
 
     return (
         <View
-            /* Absolute positioning comes from parent. */
-            className="absolute"
             style={[
                 {
+                    position: "absolute",
                     width: size,
                     height: size,
                     borderRadius: size / 2,
-                    backgroundColor: surfaceVariant,
+                    backgroundColor: theme.surfaceVariant,
                     opacity,
                 },
                 style,
