@@ -24,7 +24,7 @@ const ThemedPressable = ({
         px-4 py-2.5 rounded-lg
         flex-row items-center justify-center gap-2
         bg-primary-container
-        active:opacity-80 active:scale-[0.95]
+        active:opacity-80
         ${isActive ? "bg-primary/20" : ""}
         ${className}
       `}

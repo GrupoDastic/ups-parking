@@ -10,7 +10,7 @@ interface ParkingLotProps {
     strips: string;
 }
 
-const ParkingLot = ({ id, strips }: ParkingLotProps) => {
+const ParkingLot = ({id, strips}: ParkingLotProps) => {
     const parkingSpacesQuery = useQuery({
         queryKey: ["parkingSpaces", id, strips],
         queryFn: () => getAvailableParkingSpaces(id, strips),
@@ -23,34 +23,41 @@ const ParkingLot = ({ id, strips }: ParkingLotProps) => {
     });
 
     if (parkingSpacesQuery.isLoading || mapQuery.isLoading) {
-        return <Spinner text={"Cargando el mapa de la franja..."} className={"mb-5 mt-5"} />;
+        return <Spinner text={"Cargando el mapa de la franja..."} className={"mb-5 mt-5"}/>;
     }
 
     if (parkingSpacesQuery.isError || mapQuery.isError) {
         return <ErrorPage onRetry={() => {
             parkingSpacesQuery.refetch().then();
             mapQuery.refetch().then();
-        }} />;
+        }}/>;
     }
 
     if (!mapQuery.data || !mapQuery.data.map || mapQuery.data.map.length === 0) {
-        return <ErrorPage onRetry={() => mapQuery.refetch()} />;
+        return <ErrorPage onRetry={() => mapQuery.refetch()}/>;
     }
 
-    const { width, height, viewbox, svg_content } = mapQuery.data.map[0];
+    const {width, height, viewbox, svg_content} = mapQuery.data.map[0];
 
     return (
-        <View style={{ height: height + 50 }}>
-            <ScrollView horizontal>
-                <ScrollView>
-                    <DynamicAreaBlock
-                        width={width}
-                        height={height}
-                        viewBox={viewbox}
-                        svgContent={svg_content.replace(/\$\$/g, "")}
-                        parkingSpacesData={parkingSpacesQuery.data?.parking_spaces}
-                    />
-                </ScrollView>
+        <View style={{flex: 1}}>
+            <ScrollView
+                horizontal
+                nestedScrollEnabled
+                showsHorizontalScrollIndicator={true}
+                showsVerticalScrollIndicator={true}
+                contentContainerStyle={{
+                    width: width,
+                    height: height,
+                }}
+            >
+                <DynamicAreaBlock
+                    width={width}
+                    height={height}
+                    viewBox={viewbox}
+                    svgContent={svg_content.replace(/\$\$/g, "")}
+                    parkingSpacesData={parkingSpacesQuery.data?.parking_spaces}
+                />
             </ScrollView>
         </View>
     );

@@ -57,15 +57,18 @@ const VoiceButton = () => {
 
     return (
         <Animated.View
-            className="absolute z-50 right-5"
             style={[
-                pulseStyle,
                 {
+                    position: "absolute",
+                    right: 20,
                     bottom: Platform.OS === "ios" ? 85 : 20,
+                    zIndex: 50,
                 },
+                pulseStyle,
             ]}
         >
-            <Pressable
+
+        <Pressable
                 onPress={recognizing ? ExpoSpeechRecognitionModule.stop : handleStart}
                 className="w-14 h-14 bg-blue-700 rounded-full justify-center items-center shadow-md"
                 android_ripple={{ color: "#1A3E72", borderless: true }}

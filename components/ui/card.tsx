@@ -9,7 +9,7 @@ export function Card({
     return (
         <View
             className={cn(
-                "bg-surface rounded-xl border border-border p-6 shadow-sm",
+                "bg-surface dark:bg-surface rounded-xl p-4 shadow-sm",
                 className
             )}
             {...props}
@@ -25,7 +25,7 @@ export function CardHeader({
     return (
         <View
             className={cn(
-                "mb-4 flex-row items-start justify-between gap-2",
+                "mb-2 flex-row items-start justify-between gap-2",
                 className
             )}
             {...props}
@@ -80,7 +80,7 @@ export function CardContent({
                             }: ViewProps & { className?: string }) {
     return (
         <View
-            className={cn("py-2", className)}
+            className={cn("py-1", className)}
             {...props}
         />
     );
@@ -94,7 +94,7 @@ export function CardFooter({
     return (
         <View
             className={cn(
-                "mt-4 flex-row items-center justify-between",
+                "mt-2 flex-row items-center justify-between",
                 className
             )}
             {...props}
