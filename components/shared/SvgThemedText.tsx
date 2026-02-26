@@ -27,7 +27,7 @@ const SvgThemedText = ({
             <SvgText
                 x={x}
                 y={y}
-                fill={theme.text.primary}
+                fill={theme.primary}
                 fontWeight={fontWeight}
                 fontSize={fontSize}
                 textAnchor={textAnchor}

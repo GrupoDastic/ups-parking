@@ -1,6 +1,7 @@
 import { G, Rect, Text as SvgText } from "react-native-svg";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useState } from "react";
+import {TextProps} from "react-native";
 
 export interface SvgThemedTextProps extends TextProps {
     x: number;
@@ -42,13 +43,13 @@ const SvgAnimatedThemedText = ({
                     width={70}
                     height={40}
                     rx={6}
-                    fill={pressed ? theme.secondary : theme.surfaceVariant}
+                    fill={pressed ? theme.secondary : theme.surface}
                 />
             )}
             <SvgText
                 x={x}
                 y={y + 6}
-                fill={pressed ? theme.text.error : freeSpace ? theme.secondary : theme.text.primary}
+                fill={pressed ? theme.accent : freeSpace ? theme.secondary : theme.primary}
                 fontSize={fontSize}
                 fontWeight={fontWeight}
                 textAnchor="middle"

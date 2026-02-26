@@ -54,7 +54,7 @@ const DynamicAreaBlock = ({
                           }: DynamicAreaBlockProps) => {
 
     const theme = useAppTheme();
-    const lineColor = theme.border;
+    const lineColor = theme.line ?? "#FFE208";
 
     let cleanedSvgContent = svgContent
         .replace(/\$\$/g, "")
@@ -96,6 +96,7 @@ const DynamicAreaBlock = ({
 
     return (
         <View className="items-center justify-center mb-6 mt-6">
+
             <Svg width={width} height={height} viewBox={viewBox}>
                 <G pointerEvents="none">
                     <SvgXml xml={svgXml} width={width} height={height} />

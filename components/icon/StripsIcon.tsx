@@ -13,7 +13,7 @@ const StripsIcon = ({
                         rotate,
                         ...rest
                     }: StripsIconProps) => (
-    <G transform={`translate(${x}, ${y}) rotate(${rotate || 0})`} rest={rest}>
+    <G transform={`translate(${x}, ${y}) rotate(${rotate || 0})`} {...rest}>
         <G clipPath="url(#a)">
             <Path fill="#FF0" d="M66.777-21.962 47.025-37.867-38 30.6l19.752 15.906 85.025-68.468Z"/>
             <Path fill="#000" d="M86.53-6.056 66.776-21.962l-85.025 68.468L1.504 62.41 86.53-6.056Z"/>

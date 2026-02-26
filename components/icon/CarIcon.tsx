@@ -1,6 +1,6 @@
 import * as React from "react";
 import {G, Path, SvgProps} from "react-native-svg";
-import {Colors} from "@/constants/Colors";
+import {Colors} from "@/theme/theme";
 import {useTheme} from "@react-navigation/core";
 
 interface CarIconProps extends SvgProps {
@@ -45,7 +45,7 @@ const CarIcon = ({
 
 
     return (
-        <G transform={getAdjustedTransform(x, y, rotate)} rest={rest}>
+        <G transform={getAdjustedTransform(x, y, rotate)} {...rest}>
             <Path
                 fill={randomColor}
                 fillRule="evenodd"

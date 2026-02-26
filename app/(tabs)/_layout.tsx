@@ -8,8 +8,8 @@ export default function TabsLayout() {
                 headerShown: false, // Ocultar cabecera en las pestañas
                 tabBarActiveTintColor: "#2A5EA7", // color activo
                 tabBarStyle: {
-                    backgroundColor: "#fff",
-                    borderTopColor: "#ccc",
+                    backgroundColor: "#000",
+                    borderTopColor: "#dfdb16",
                 },
             }}
         >
@@ -31,16 +31,6 @@ export default function TabsLayout() {
                     tabBarLabel: "Mapa",
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="map-outline" color={color} size={size} />
-                    ),
-                }}
-            />
-            <Tabs.Screen
-                name="account"
-                options={{
-                    title: "Mi Cuenta",
-                    tabBarLabel: "Cuenta",
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="person-outline" color={color} size={size} />
                     ),
                 }}
             />

@@ -70,7 +70,7 @@ const VoiceButton = () => {
 
         <Pressable
                 onPress={recognizing ? ExpoSpeechRecognitionModule.stop : handleStart}
-                className="w-14 h-14 bg-blue-700 rounded-full justify-center items-center shadow-md"
+                className="w-14 h-14 bg-secondary rounded-full justify-center items-center shadow-md"
                 android_ripple={{ color: "#1A3E72", borderless: true }}
             >
                 <Ionicons name={recognizing ? "stop" : "mic-outline"} size={24} color="white" />

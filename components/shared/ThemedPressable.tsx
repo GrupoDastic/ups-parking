@@ -23,9 +23,9 @@ const ThemedPressable = ({
             className={`
         px-4 py-2.5 rounded-lg
         flex-row items-center justify-center gap-2
-        bg-primary-container
+        bg-secondary
         active:opacity-80
-        ${isActive ? "bg-primary/20" : ""}
+        ${isActive ? "bg-secondary/20" : ""}
         ${className}
       `}
             {...rest}
@@ -34,13 +34,12 @@ const ThemedPressable = ({
                 <Ionicons
                     name={icon}
                     size={size}
-                    className="text-primary"
+                    color="#FFFFFF"
                 />
             )}
 
             <ThemedText
                 type="button"
-                className="text-primary"
             >
                 {title}
             </ThemedText>

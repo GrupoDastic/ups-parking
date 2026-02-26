@@ -16,7 +16,7 @@ const PregnantWithBackground = ({
     return (
         <G
             fill="#fff"
-            transform={`translate(${x}, ${y}) rotate(${rotate || 0})`} rest={rest}
+            transform={`translate(${x}, ${y}) rotate(${rotate || 0})`} {...rest}
         >
             <Rect
                 x={1}

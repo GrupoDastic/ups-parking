@@ -1,6 +1,6 @@
 import * as React from "react"
 import {G, Path, SvgProps} from "react-native-svg"
-import {useThemeColor} from "@/hooks/useThemeColor";
+import {useAppTheme} from "@/hooks/useAppTheme";
 
 interface ArrowIconProps extends SvgProps {
     x: number;
@@ -9,10 +9,11 @@ interface ArrowIconProps extends SvgProps {
 
 const ArrowIcon = ({x, y, width, height, viewBox, ...rest}: ArrowIconProps) => {
 
-    const fillColor = useThemeColor({}, 'text.primary');
+    const theme = useAppTheme();
+    const fillColor = theme.primary;
 
     return (
-        <G transform={`translate(${x}, ${y})`} rest={rest}>
+        <G transform={`translate(${x}, ${y})`} {...rest}>
             <Path
                 stroke={fillColor}
                 strokeLinecap="round"

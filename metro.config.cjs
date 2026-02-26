@@ -1,20 +1,20 @@
-// metro.config.js
+// metro.config.cjs
 const { getDefaultConfig } = require("expo/metro-config");
-const { withNativewind } = require("nativewind/metro");
+const { withNativeWind } = require('nativewind/metro');
 
 const config = getDefaultConfig(__dirname);
 
-const updatedConfig = withNativewind(config);
+const updatedConfig = withNativeWind(config, {
+    input: './global.css',
+});
 
 updatedConfig.resolver = {
     ...updatedConfig.resolver,
-    sourceExts: [...updatedConfig.resolver.sourceExts, "cjs", "mjs"],
+    sourceExts: [...updatedConfig.resolver.sourceExts, "cjs"],
     assetExts: [
         ...updatedConfig.resolver.assetExts,
         "glb",
         "gltf",
-        "png",
-        "jpg",
     ],
 };
 

@@ -36,7 +36,6 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.ico"
     },
     "plugins": [
       "expo-router",
@@ -58,6 +57,13 @@
             "com.google.android.googlequicksearchbox"
           ]
         }
+      ],
+      [
+        "expo-network-security-config",
+        {
+          networkSecurityConfig: "./assets/config/network_security_config.xml",
+          enable: true,
+        },
       ]
     ],
     "experiments": {

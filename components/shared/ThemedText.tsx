@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, TextProps } from "react-native";
+import {Text, TextProps} from "react-native";
 
 type TextType =
     | "h1" | "h2" | "h3" | "h4" | "h5" | "h6"
@@ -15,26 +15,34 @@ export interface ThemedTextProps extends TextProps {
 }
 
 const variantClasses: Record<TextType, string> = {
-    h1: "text-4xl font-poppins-bold",
-    h2: "text-3xl font-poppins-bold",
-    h3: "text-2xl font-poppins-bold",
-    h4: "text-xl font-poppins-bold",
-    h5: "text-lg font-poppins-bold",
-    h6: "text-base font-poppins-bold",
+    /* Títulos institucionales */
+    h1: "text-4xl font-gill-bold text-foreground",
+    h2: "text-3xl font-gill-bold text-foreground",
+    h3: "text-2xl font-gill-bold text-foreground",
+    h4: "text-xl font-gill-bold text-foreground",
+    h5: "text-lg font-gill-bold text-foreground",
+    h6: "text-base font-gill-bold text-foreground",
 
-    subtitle1: "text-lg font-poppins-medium",
-    subtitle2: "text-base font-poppins-medium",
+    /* Subtítulos */
+    subtitle1: "text-lg font-gill-medium text-foreground",
+    subtitle2: "text-base font-gill-medium text-foreground",
 
-    body1: "text-base font-poppins-regular",
-    body2: "text-sm font-poppins-regular",
+    /* Cuerpo de texto */
+    body1: "text-base font-gill-regular text-foreground",
+    body2: "text-sm font-gill-regular text-foreground",
 
-    caption: "text-xs font-poppins-regular",
-    button: "text-base font-poppins-medium",
-    overline: "text-xs font-poppins-medium",
-    link: "text-base font-poppins-medium underline",
+    /* Textos pequeños */
+    caption: "text-xs font-gill-light text-muted",
+    overline: "text-xs font-gill-regular uppercase text-muted",
 
-    error: "text-sm font-poppins-bold text-error",
+    /* Interacciones */
+    button: "text-base font-gill-bold text-white",
+    link: "text-base font-gill-regular underline text-primary",
+
+    /* Error */
+    error: "text-sm font-gill-bold text-error",
 };
+
 
 const ThemedText: React.FC<ThemedTextProps> = ({
                                                    className = "",
