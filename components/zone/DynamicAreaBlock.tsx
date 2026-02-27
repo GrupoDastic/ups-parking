@@ -26,6 +26,7 @@ interface DynamicAreaBlockProps {
     height: number;
     viewBox: string;
     parkingSpacesData?: ParkingSpace[];
+    onSpacePress?: (space: ParkingSpace) => void;
 }
 
 const ParkingIcon = ({ type, status, x, y, viewBox, width, height, rotate }: any) => {
@@ -51,6 +52,7 @@ const DynamicAreaBlock = ({
                               height,
                               viewBox,
                               parkingSpacesData,
+                              onSpacePress,
                           }: DynamicAreaBlockProps) => {
 
     const theme = useAppTheme();
@@ -131,6 +133,7 @@ const DynamicAreaBlock = ({
                                 withBackground
                                 fontWeight="bold"
                                 rotate={getRotationSvg(p.orientation, p.rotation)}
+                                onPress={() => onSpacePress?.(p)}
                             >
                                 {p.identifier}
                             </SvgAnimatedThemedText>

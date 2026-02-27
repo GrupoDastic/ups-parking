@@ -8,14 +8,22 @@ export interface ZoneCardProps {
     zoneIdentifier: string;
     zoneName: string;
     availableSpaces: string;
+    totalSpaces: string;
     style?: StyleProp<ViewStyle>;
 }
 
 const ZoneCard = forwardRef<View, ZoneCardProps>(
-    ({zoneIdentifier, zoneName, availableSpaces, style}, ref) => {
+    ({zoneIdentifier, zoneName, availableSpaces, totalSpaces, style}, ref) => {
         const spacesCount = Number.parseInt(availableSpaces);
         const isFull = spacesCount === 0;
         const theme = useAppTheme();
+
+        const totalCount = Number.parseInt(totalSpaces);
+
+        const percentage = totalCount > 0
+            ? (spacesCount / totalCount) * 100
+            : 0;
+
 
         return (
             <View
@@ -93,8 +101,11 @@ const ZoneCard = forwardRef<View, ZoneCardProps>(
                     {/* Barra de progreso inferior decorativa */}
                     <View className="h-1.5 w-full bg-primary/10">
                         <View
-                            className={isFull ? "bg-error h-full" : "bg-accent h-full"}
-                            style={{width: isFull ? "100%" : "30%"}}
+                            className={`
+        h-full 
+        ${percentage < 20 ? "bg-error" : percentage < 50 ? "bg-warning" : "bg-success"}
+    `}
+                            style={{ width: `${percentage}%` }}
                         />
                     </View>
                 </View>

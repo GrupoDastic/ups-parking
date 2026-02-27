@@ -14,6 +14,7 @@ export const ZoneSchema = z.object({
     zone_identifier: z.enum(ZONE_PRIORITY),
     zone_name: z.string(),
     available_spaces: z.string(),
+    total_spaces: z.string(),
 });
 
 export const ZonesSchema = z.object({

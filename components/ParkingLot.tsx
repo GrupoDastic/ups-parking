@@ -10,9 +10,10 @@ import DynamicAreaBlock from "@/components/zone/DynamicAreaBlock";
 interface ParkingLotProps {
     id: string | string[];
     strips: string;
+    onSpacePress?: (space: any) => void;
 }
 
-const ParkingLot = ({ id, strips }: ParkingLotProps) => {
+const ParkingLot = ({ id, strips, onSpacePress  }: ParkingLotProps) => {
     const parkingSpacesQuery = useQuery({
         queryKey: ["parkingSpaces", id, strips],
         queryFn: () => getAvailableParkingSpaces(id, strips),
@@ -70,6 +71,7 @@ const ParkingLot = ({ id, strips }: ParkingLotProps) => {
                         viewBox={viewbox}
                         svgContent={svg_content.replace(/\$\$/g, "")}
                         parkingSpacesData={parkingSpacesQuery.data?.parking_spaces}
+                        onSpacePress={onSpacePress}
                     />
                 </View>
             </ScrollView>

@@ -2,6 +2,7 @@ import { G, Rect, Text as SvgText } from "react-native-svg";
 import { useAppTheme } from "@/hooks/useAppTheme";
 import { useState } from "react";
 import {TextProps} from "react-native";
+import {ParkingSpace} from "@/types";
 
 export interface SvgThemedTextProps extends TextProps {
     x: number;
@@ -12,6 +13,7 @@ export interface SvgThemedTextProps extends TextProps {
     onPress?: () => void;
     withBackground?: boolean;
     fontWeight?: string;
+    onSpacePress?: (space: ParkingSpace) => void;
 }
 
 const SvgAnimatedThemedText = ({

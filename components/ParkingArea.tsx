@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Dimensions, ScrollView, View, Image} from "react-native";
 import {useLocalSearchParams} from "expo-router";
-import {useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {Ionicons} from "@expo/vector-icons";
 
 import ParkingLot from "@/components/ParkingLot";
@@ -9,8 +9,19 @@ import ThemedText from "@/components/shared/ThemedText";
 import ThemedPressable from "@/components/shared/ThemedPressable";
 import Spinner from "@/components/ui/spinner/Spinner";
 import ErrorPage from "@/components/ErrorPage";
-import {getAvailableZonesStrips} from "@/services/parkingService";
+import {
+    assignParking,
+    cancelReservation,
+    confirmReservation,
+    getAvailableZonesStrips,
+    reserveParking
+} from "@/services/parkingService";
 import {AppModal} from "@/components/ui/modal";
+import {useColorScheme} from "nativewind";
+
+import * as Speech from "expo-speech";
+import Toast from "react-native-toast-message";
+import ReservationModal from "@/components/zone/Reservation-Modal";
 
 const imageById = [
     {id: 1, image: require("@/assets/images/map/zone1.jpg")},
@@ -28,7 +39,83 @@ export default function ParkingZone() {
     }>();
 
     const [selectedStrip, setSelectedStrip] = useState("1");
-    const [modalVisible, setModalVisible] = useState(false);
+    const [mapModalVisible, setMapModalVisible] = useState(false);
+    const [reservationModalVisible, setReservationModalVisible] = useState(false);
+    const {colorScheme} = useColorScheme();
+    const queryClient = useQueryClient();
+
+
+
+    const [reservation, setReservation] = useState(null);
+
+    const reserveMutation = useMutation({
+        mutationFn: (spaceId: string) =>
+            reserveParking(id, selectedStrip, spaceId),
+        onSuccess: (data) => {
+            setReservation(data);
+            setReservationModalVisible(true);
+
+            // Voz + toast
+            const num = data.parking_space.number ?? data.parking_space.identifier;
+            Speech.stop();
+            Speech.speak(`Reserva creada para el espacio ${num}. Tiene ${Math.floor(data.expires_in_seconds / 60)} minutos para confirmar y parquear.`, { language: "es-ES" });
+
+            Toast.show({
+                type: "info",
+                text1: "Reserva creada",
+                text2: `Espacio ${num}. Confirme en ${Math.floor(data.expires_in_seconds / 60)} min`,
+                position: "top",
+                visibilityTime: 3000,
+            });
+
+            // invalidar strips/zones? No todavía; la reserva ya cambió estado a 'reserved',
+            // podrías invalidar para mostrar ocupación temporal:
+            queryClient.invalidateQueries({ queryKey: ["strips", id] });
+            queryClient.invalidateQueries({ queryKey: ["zones"] });
+        },
+        onError: (err: any) => {
+            Toast.show({ type: "error", text1: "No se pudo reservar", text2: err.message });
+        }
+    });
+
+    const confirmMutation = useMutation({
+        mutationFn: (token: string) => confirmReservation(id, selectedStrip, token),
+        onSuccess: (data) => {
+            Speech.stop();
+            const num = data.parking_space.number ?? data.parking_space.identifier;
+            Speech.speak(`Reserva confirmada. Espacio ${num} ocupado.`, { language: "es-ES" });
+
+            Toast.show({ type: "success", text1: "Reserva confirmada", text2: `Espacio ${num} ocupado` });
+
+            // refrescar
+            queryClient.invalidateQueries({ queryKey: ["parkingSpaces", id, selectedStrip] });
+            queryClient.invalidateQueries({ queryKey: ["strips", id] });
+            queryClient.invalidateQueries({ queryKey: ["zones"] });
+        },
+        onError: (err: any) => {
+            Toast.show({ type: "error", text1: "Error al confirmar", text2: err.message });
+        }
+    });
+
+    const cancelMutation = useMutation({
+        mutationFn: (token: string) => cancelReservation(id, selectedStrip, token),
+        onSuccess: (data) => {
+            Toast.show({ type: "info", text1: "Reserva cancelada" });
+            queryClient.invalidateQueries({ queryKey: ["strips", id] });
+            queryClient.invalidateQueries({ queryKey: ["zones"] });
+        },
+        onError: (err: any) => {
+            Toast.show({ type: "error", text1: "Error al cancelar", text2: err.message });
+        }
+    });
+
+
+
+    const stripsQuery = useQuery({
+        queryKey: ["strips", id],
+        queryFn: () => getAvailableZonesStrips(id),
+        refetchInterval: 5000,
+    });
 
     if (!id) {
         return (
@@ -38,17 +125,23 @@ export default function ParkingZone() {
         );
     }
 
-    const stripsQuery = useQuery({
-        queryKey: ["strips", id],
-        queryFn: () => getAvailableZonesStrips(id),
-        refetchInterval: 5000,
-    });
-
     if (stripsQuery.isError) {
         return <ErrorPage onRetry={stripsQuery.refetch}/>;
     }
 
     const strips = stripsQuery.data?.strips ?? [];
+
+    async function handleConfirm(token: string) {
+        await confirmMutation.mutateAsync(token);
+        setReservationModalVisible(false);
+        setReservation(null);
+    }
+
+    async function handleCancel(token: string) {
+        await cancelMutation.mutateAsync(token);
+        setReservationModalVisible(false);
+        setReservation(null);
+    }
 
     return (
         <View className="flex-1 bg-background">
@@ -72,7 +165,9 @@ export default function ParkingZone() {
                 >
                     <View className="p-6">
                         <View className="flex-row items-center mb-2">
-                            <Ionicons name="location-outline" size={26}/>
+                            <Ionicons name="location-outline"
+                                      color={colorScheme === "dark" ? "rgb(255,255,255)" : "rgb(0,0,0)"}
+                                      size={26}/>
                             <ThemedText type="h4" className="ml-2">
                                 Bloque {identifier}
                             </ThemedText>
@@ -148,7 +243,7 @@ export default function ParkingZone() {
                             <ThemedPressable
                                 title="Ver mapa"
                                 icon="map"
-                                onPress={() => setModalVisible(true)}
+                                onPress={() => setMapModalVisible(true)}
                             />
                         </View>
 
@@ -158,18 +253,32 @@ export default function ParkingZone() {
                             <ThemedText className="text-muted">
                                 Vista previa del plano
                             </ThemedText>
-                            <ParkingLot id={id} strips={selectedStrip}/>
+                            <ParkingLot
+                                id={id}
+                                strips={selectedStrip}
+                                onSpacePress={(space) => {
+                                    if (space.status !== "free") return;
+
+                                    console.log("Espacio seleccionado:", space.id);
+
+                                    reserveMutation.mutate(space.id);
+                                }}
+                            />
                         </View>
 
                         {/* PRIMARY ACTION */}
-                        <ThemedPressable
-                            title={`Parquear en franja ${selectedStrip}`}
-                            icon="car"
-                            className="bg-secondary mt-5"
-                        />
                     </View>
                 </View>
-
+                <ReservationModal
+                    visible={reservationModalVisible}
+                    reservation={reservation}
+                    onClose={() => {
+                        setReservationModalVisible(false);
+                        setReservation(null);
+                    }}
+                    onConfirm={handleConfirm}
+                    onCancelReservation={handleCancel}
+                />
                 {/* ================= MODAL ================= */}
                 {renderMapModal()}
             </ScrollView>
@@ -181,9 +290,9 @@ export default function ParkingZone() {
 
         return (
             <AppModal
-                visible={modalVisible}
+                visible={mapModalVisible}
                 onClose={() => {
-                    setModalVisible(false);
+                    setMapModalVisible(false);
                 }}
             >
                 {/* HEADER */}

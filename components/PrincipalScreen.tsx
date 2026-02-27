@@ -216,6 +216,7 @@ const PrincipalScreen: React.FC = () => {
                                         zoneIdentifier={item.zone_identifier}
                                         zoneName={item.zone_name}
                                         availableSpaces={item.available_spaces}
+                                        totalSpaces={item.total_spaces}
                                     />
                                 </TouchableOpacity>
                             );
